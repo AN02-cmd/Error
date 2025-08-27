@@ -133,6 +133,7 @@
   <script type="module">
     // ======= Firebase SDKs (v10) =======
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, setDoc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
@@ -144,8 +145,8 @@
       projectId: "chat-k-8b1da",
       storageBucket: "chat-k-8b1da.firebasestorage.app",
       messagingSenderId: "1024943282079",
-      appId: "1:1024943282079:web:8a72c23b7c8af10a344faa",
-      measurementId: "G-1RJ5KR11RT"
+      appId: "1:1024943282079:web:defc637841012232344faa",
+      measurementId: "G-PGWDQ1WY8X"
     };
 
     // ======= 2) Ініціалізація =======
@@ -375,4 +376,5 @@
   </script>
 </body>
 </html>
+
 
