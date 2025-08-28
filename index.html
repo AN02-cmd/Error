@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Реальний чат на GitHub Pages (Firebase)</title>
+  <title>Chat For 2</title>
   <style>
     :root {
-      --bg: #0f172a;        /* slate-900 */
-      --panel: #111827;     /* gray-900 */
-      --muted: #94a3b8;     /* slate-400 */
-      --text: #e5e7eb;      /* gray-200 */
-      --bubble-me: #2563eb; /* blue-600 */
-      --bubble-friend: #334155; /* slate-700 */
-      --accent: #22c55e;    /* green-500 */
-      --offline: #475569;   /* slate-600 */
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --bubble-me: #2563eb;
+      --bubble-friend: #334155;
+      --accent: #22c55e;
+      --offline: #475569;
       --shadow: 0 10px 25px rgba(0,0,0,.35);
       --radius: 16px;
     }
@@ -26,7 +26,6 @@
       display: grid; place-items: center;
     }
 
-    /* Base app layout (desktop-first), use dvh for mobile stability */
     .app {
       width: min(1100px, 100%);
       height: min(860px, 100dvh);
@@ -35,14 +34,12 @@
       gap: 10px; padding: 14px;
     }
 
-    /* Share banner */
     .share { background: #0b1224; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 10px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
     .share small { color: var(--muted); }
     .share .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
     .share input { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 10px; color: var(--text); }
     .share button { border: none; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; color: #fff; background: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,.25); }
 
-    /* Header with avatars left/right */
     .header { position: relative; background: var(--panel); padding: 16px 72px; border-radius: 20px; box-shadow: var(--shadow); }
     .title { text-align: center; font-weight: 700; letter-spacing: .3px; }
     .avatars { position: absolute; inset: 0; pointer-events: none; }
@@ -56,13 +53,11 @@
     .status-text.left { left: 84px; }
     .status-text.right { right: 84px; }
 
-    /* Profile bar */
     .profile { background: #0b1224; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
     .profile input { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 10px; color: var(--text); }
     .profile button { border: none; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; color: #fff; background: #22c55e; box-shadow: 0 6px 18px rgba(34,197,94,.25); }
     .hint { color: var(--muted); font-size: 12px; }
 
-    /* Chat area */
     .chat { background: var(--panel); border-radius: 20px; box-shadow: var(--shadow); display: grid; grid-template-rows: 1fr auto; overflow: hidden; }
     .messages { overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
     .msg { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
@@ -74,7 +69,6 @@
     .meta { margin-top: 6px; font-size: 11px; color: var(--muted); }
     .msg .mini-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; opacity: .95; border: 2px solid #1f2937; }
 
-    /* Typing bubble */
     .typing .bubble { opacity: .9; outline: 1px dashed rgba(255,255,255,.15); }
     .typing .draft { font-style: italic; opacity: .9; }
     .dots { display: inline-flex; gap: 4px; margin-right: 6px; }
@@ -83,21 +77,16 @@
     .dots i:nth-child(3){ animation-delay: .4s }
     @keyframes blink { 0%, 80%, 100% { opacity: .2 } 40% { opacity: 1 } }
 
-    /* Composer */
     .composer { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px; background: rgba(0,0,0,.2); }
     .composer input[type="text"] { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 12px; color: var(--text); }
     .composer button { border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; cursor: pointer; color: #fff; background: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,.25); }
 
     @media (max-width: 860px) { .status-text { display: none; } }
 
-    /* ===== Mobile enhancements ===== */
-
-    /* Prefer modern viewport units to avoid iOS address bar jumps */
     @supports (height: 100svh) {
       .app { height: min(860px, 100svh); }
     }
 
-    /* Phones (<=540px) */
     @media (max-width: 540px) {
 
       :root { --radius: 14px; }
@@ -111,7 +100,6 @@
         grid-template-rows: auto auto 1fr auto;
       }
 
-      /* Share banner stacks */
       .share {
         grid-template-columns: 1fr;
         gap: 8px;
@@ -122,7 +110,6 @@
       .share input { padding: 12px; }
       .share button { padding: 12px; }
 
-      /* Header compact */
       .header { padding: 14px 56px; border-radius: var(--radius); }
       .title { font-size: 16px; }
       .avatar-wrap { width: 52px; height: 52px; }
@@ -130,7 +117,6 @@
       .status { width: 14px; height: 14px; border-width: 2px; }
       .status-text { display: none; }
 
-      /* Profile compact */
       .profile {
         grid-template-columns: 1fr auto;
         gap: 8px;
@@ -140,7 +126,6 @@
       .profile input { padding: 12px; }
       .profile button { padding: 12px; }
 
-      /* Chat fills screen; leave room for composer */
       .chat { border-radius: var(--radius); }
       .messages {
         padding: 14px 12px;
@@ -154,7 +139,6 @@
       .meta { margin-top: 4px; font-size: 10px; }
       .dots i { width: 5px; height: 5px; }
 
-      /* Sticky composer with safe-area */
       .composer {
         position: sticky;
         bottom: 0;
@@ -170,7 +154,7 @@
       .composer input[type="text"] {
         padding: 14px 12px;
         border-radius: 12px;
-        font-size: 16px; /* prevents iOS zoom-on-focus */
+        font-size: 16px;
       }
       .composer button {
         padding: 14px 16px;
@@ -179,7 +163,6 @@
       }
     }
 
-    /* Small tablets / narrow landscape */
     @media (min-width: 541px) and (max-width: 860px) {
       .app { height: min(860px, 100dvh); }
       .status-text { display: none; }
@@ -187,7 +170,6 @@
       .composer { position: sticky; bottom: 0; z-index: 5; }
     }
 
-    /* Respect notches / home indicator on all sizes */
     @supports (padding: env(safe-area-inset-bottom)) {
       .app { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
       .header { padding-top: max(16px, env(safe-area-inset-top)); }
@@ -208,7 +190,7 @@
     </section>
 
     <header class="header">
-      <div class="title">Чат з другом <span style="color:var(--muted); font-weight:500">(реальний, через Firebase)</span></div>
+      <div class="title">Chat For 2</div>
       <div class="avatars" aria-hidden="true">
         <div class="avatar-wrap left">
           <img id="avatar-friend" class="avatar" alt="Аватар друга" title="Аватар друга (змінює він у себе)" />
@@ -218,15 +200,14 @@
           <img id="avatar-me" class="avatar" alt="Мій аватар" title="Клікни, щоб змінити свій аватар (збережеться)" />
           <span id="status-dot-me" class="status" aria-hidden="true"></span>
         </div>
-        <div class="status-text left" id="status-text-friend">Друг — не в мережі</div>
-        <div class="status-text right" id="status-text-me">Я — не в мережі</div>
+        <div class="status-text left" id="status-text-friend">Friend — Not Online</div>
+        <div class="status-text right" id="status-text-me">I'm — Not Online</div>
       </div>
     </header>
 
     <section class="profile">
       <input id="display-name" type="text" placeholder="Ваш нікнейм" />
       <button id="save-profile" type="button">Зберегти профіль</button>
-      <div class="hint">Клік по правому аватару — завантажити фото (воно збережеться у хмарі).</div>
     </section>
 
     <main class="chat">
@@ -238,18 +219,15 @@
     </main>
   </div>
 
-  <!-- Ховаємо файловий інпут для мого аватара -->
   <input id="file-me" type="file" accept="image/*" hidden />
 
   <script type="module">
-    // ======= Firebase SDKs (v10) =======
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, setDoc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    // ======= 1) Налаштування Firebase (ЗАМІНИ на свої значення з консолі Firebase) =======
     const firebaseConfig = {
       apiKey: "AIzaSyA_YoQzhcZeh8_VxFNuCruCYkW1kW6U1z4",
     authDomain: "chat-k-8b1da.firebaseapp.com",
@@ -260,13 +238,11 @@
     measurementId: "G-PGWDQ1WY8X"
     };
 
-    // ======= 2) Ініціалізація =======
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    // ======= 3) Елементи UI =======
     const shareLink = document.getElementById('share-link');
     const copyLinkBtn = document.getElementById('copy-link');
     const avatarMe = document.getElementById('avatar-me');
@@ -280,7 +256,6 @@
     const inputText = document.getElementById('input-text');
     const sendBtn = document.getElementById('send');
 
-    // Генерація/отримання ID кімнати через #hash у URL
     function ensureRoomId(){
       let id = location.hash.replace('#','').trim();
       if(!id){ id = 'room-' + Math.random().toString(36).slice(2,8); history.replaceState(null, '', '#'+id); }
@@ -292,7 +267,6 @@
       try { await navigator.clipboard.writeText(shareLink.value); copyLinkBtn.textContent = 'Скопійовано!'; setTimeout(()=>copyLinkBtn.textContent='Скопіювати', 1500); } catch(e){ alert('Скопіюйте вручну'); }
     });
 
-    // Аватари за замовчуванням (SVG data URI)
     const svgAvatar = (bg, text) => 'data:image/svg+xml;utf8,' + encodeURIComponent(`
       <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
         <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${bg}'/><stop offset='1' stop-color='#111827'/></linearGradient></defs>
@@ -302,18 +276,15 @@
     avatarMe.src = localStorage.getItem('avatarURL') || svgAvatar('#10b981', 'Я');
     avatarFriend.src = svgAvatar('#6366f1', 'Д');
 
-    // Мої дані (у процесі входу)
     let uid = null;
     let myProfile = { name: localStorage.getItem('name') || 'Гість', avatarURL: localStorage.getItem('avatarURL') || '' };
     nameInput.value = myProfile.name;
 
-    // Авторизація (анонімна)
     await signInAnonymously(auth);
 
     onAuthStateChanged(auth, async (user) => {
       if(!user) return;
       uid = user.uid;
-      // Створити/оновити документ учасника
       await setDoc(doc(db, 'rooms', roomId, 'participants', uid), {
         name: myProfile.name,
         avatarURL: myProfile.avatarURL || '',
@@ -327,7 +298,6 @@
       listenMessages();
     });
 
-    // Heartbeat для онлайн-статусу
     function startHeartbeat(){
       setInterval(async () => {
         if(!uid) return;
@@ -335,7 +305,6 @@
       }, 25_000);
     }
 
-    // Збереження профілю (нікнейм)
     saveProfileBtn.addEventListener('click', async () => {
       myProfile.name = nameInput.value.trim() || 'Гість';
       localStorage.setItem('name', myProfile.name);
@@ -359,24 +328,20 @@
       } catch (err){ alert('Помилка завантаження аватара'); console.error(err); }
     });
 
-    // Визначення онлайн-статусу за останньою активністю (<= 60с)
     function isOnline(lastSeen){
       if(!lastSeen?.toMillis) return false;
       return (Date.now() - lastSeen.toMillis()) <= 60_000;
     }
 
-    // Слухач учасників кімнати (щоб показувати друга, його аватар і хмаринку набору)
     let friend = null;
     function listenParticipants(){
       const col = collection(db, 'rooms', roomId, 'participants');
       onSnapshot(col, (snap) => {
         let myDoc = null; const others = [];
         snap.forEach(d => { const data = d.data(); (d.id === uid ? (myDoc = data) : others.push({ id: d.id, ...data })); });
-        // Обрати "друга" як найсвіжішого за lastSeen
         others.sort((a,b) => (b.lastSeen?.seconds||0) - (a.lastSeen?.seconds||0));
         friend = others[0] || null;
 
-        // Оновити статуси та аватари
         statusDot.me.classList.toggle('online', isOnline(myDoc?.lastSeen));
         statusText.me.textContent = 'Я — ' + (isOnline(myDoc?.lastSeen) ? 'в мережі' : 'не в мережі');
         statusDot.friend.classList.toggle('online', isOnline(friend?.lastSeen));
@@ -402,13 +367,11 @@
           text, uid, name: myProfile.name, avatarURL: myProfile.avatarURL || '', createdAt: serverTimestamp()
         });
         inputText.value = '';
-        // Очистити локальну ознаку набору і сховати бульбашку у друга
         await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { typingText: '' });
         updateTypingBubble('me', '');
       } catch(err){ console.error(err); alert('Не вдалося надіслати'); }
     }
 
-    // Хмаринка набору мною (показ для друга через Firestore)
     let typingTimer = 0;
     inputText.addEventListener('input', async (e) => {
       const text = e.target.value;
@@ -424,7 +387,6 @@
       }, 60_000);
     });
 
-    // Рендер повідомлень (реальний час)
     function listenMessages(){
       const q = query(collection(db, 'rooms', roomId, 'messages'), orderBy('createdAt'));
       onSnapshot(q, (snap) => {
@@ -446,7 +408,6 @@
       messagesEl.appendChild(wrap);
     }
 
-    // Хмаринки
     const typingNodes = { friend: null, me: null };
     function updateTypingBubble(who, text){
       text = (text||'').trim();
@@ -469,10 +430,8 @@
     }
     function cancelTyping(who){ if(typingNodes[who]){ typingNodes[who].remove(); typingNodes[who] = null; } }
 
-    // Статуси онлайн текстом
     function setOnlineUI(who, online){ statusDot[who].classList.toggle('online', !!online); statusText[who].textContent = (who==='friend'?'Друг':'Я') + ' — ' + (online ? 'в мережі' : 'не в мережі'); }
 
-    // Додатково: оновлювати аватар друга у typing-бульбашці при зміні
     const obs = new MutationObserver(() => {
       for(const who of ['friend','me']){
         const node = typingNodes[who]?.querySelector('.mini-avatar'); if(node) node.src = (who==='friend' ? (friend?.avatarURL||avatarFriend.src) : (myProfile.avatarURL||avatarMe.src));
@@ -481,9 +440,9 @@
     obs.observe(avatarMe, { attributes: true, attributeFilter: ['src'] });
     obs.observe(avatarFriend, { attributes: true, attributeFilter: ['src'] });
 
-    // Початкове системне повідомлення (локально)
     function system(text){ const msg = document.createElement('div'); msg.className = 'msg friend'; const bubble = document.createElement('div'); bubble.className = 'bubble'; const t = document.createElement('div'); t.style.opacity = .85; t.style.fontStyle = 'italic'; t.textContent = text; const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); bubble.append(t, meta); msg.append(bubble); messagesEl.append(msg); }
     system('Готово! Поділися посиланням зверху з другом, щоб зайти в одну кімнату. Увімкніть нікнейм, завантажте аватар (він збережеться), друкуйте — хмаринка зникне через 1 хв або після відправки.');
   </script>
 </body>
 </html>
+
