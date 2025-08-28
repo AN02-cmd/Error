@@ -25,7 +25,15 @@
       color: var(--text);
       display: grid; place-items: center;
     }
-    .app { width: min(1100px, 100%); height: min(860px, 100vh); display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; padding: 14px; }
+
+    /* Base app layout (desktop-first), use dvh for mobile stability */
+    .app {
+      width: min(1100px, 100%);
+      height: min(860px, 100dvh);
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 10px; padding: 14px;
+    }
 
     /* Share banner */
     .share { background: #0b1224; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 10px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
@@ -81,6 +89,109 @@
     .composer button { border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; cursor: pointer; color: #fff; background: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,.25); }
 
     @media (max-width: 860px) { .status-text { display: none; } }
+
+    /* ===== Mobile enhancements ===== */
+
+    /* Prefer modern viewport units to avoid iOS address bar jumps */
+    @supports (height: 100svh) {
+      .app { height: min(860px, 100svh); }
+    }
+
+    /* Phones (<=540px) */
+    @media (max-width: 540px) {
+
+      :root { --radius: 14px; }
+
+      body { place-items: stretch; }
+      .app {
+        width: 100%;
+        height: 100dvh;
+        padding: 10px;
+        gap: 8px;
+        grid-template-rows: auto auto 1fr auto;
+      }
+
+      /* Share banner stacks */
+      .share {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--radius);
+      }
+      .share .row { grid-template-columns: 1fr; gap: 8px; }
+      .share input { padding: 12px; }
+      .share button { padding: 12px; }
+
+      /* Header compact */
+      .header { padding: 14px 56px; border-radius: var(--radius); }
+      .title { font-size: 16px; }
+      .avatar-wrap { width: 52px; height: 52px; }
+      .avatar { width: 52px; height: 52px; border-width: 2px; }
+      .status { width: 14px; height: 14px; border-width: 2px; }
+      .status-text { display: none; }
+
+      /* Profile compact */
+      .profile {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--radius);
+      }
+      .profile input { padding: 12px; }
+      .profile button { padding: 12px; }
+
+      /* Chat fills screen; leave room for composer */
+      .chat { border-radius: var(--radius); }
+      .messages {
+        padding: 14px 12px;
+        gap: 10px;
+        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .msg { gap: 6px; max-width: 92%; }
+      .msg .mini-avatar { width: 24px; height: 24px; border-width: 2px; }
+      .bubble { padding: 9px 11px; border-radius: 12px; font-size: 15px; }
+      .meta { margin-top: 4px; font-size: 10px; }
+      .dots i { width: 5px; height: 5px; }
+
+      /* Sticky composer with safe-area */
+      .composer {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        padding: 10px;
+        gap: 8px;
+        background:
+          linear-gradient(180deg, transparent, rgba(0,0,0,.25)),
+          rgba(0,0,0,.20);
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        backdrop-filter: saturate(1.1) blur(6px);
+      }
+      .composer input[type="text"] {
+        padding: 14px 12px;
+        border-radius: 12px;
+        font-size: 16px; /* prevents iOS zoom-on-focus */
+      }
+      .composer button {
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-size: 16px;
+      }
+    }
+
+    /* Small tablets / narrow landscape */
+    @media (min-width: 541px) and (max-width: 860px) {
+      .app { height: min(860px, 100dvh); }
+      .status-text { display: none; }
+      .messages { padding-bottom: 72px; }
+      .composer { position: sticky; bottom: 0; z-index: 5; }
+    }
+
+    /* Respect notches / home indicator on all sizes */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .app { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+      .header { padding-top: max(16px, env(safe-area-inset-top)); }
+    }
   </style>
 </head>
 <body>
@@ -140,7 +251,7 @@
 
     // ======= 1) Налаштування Firebase (ЗАМІНИ на свої значення з консолі Firebase) =======
     const firebaseConfig = {
-      apiKey: "AIzaSyA_YoQzhcZeh8_VxFNuCruCYkW1kW6U1z4",
+      apiKey: "AIzaSyA_YoQzhcZeh8_VxFNuCruCYkW1kW6U1з4",
       authDomain: "chat-k-8b1da.firebaseapp.com",
       projectId: "chat-k-8b1da",
       storageBucket: "chat-k-8b1da.firebasestorage.app",
@@ -376,5 +487,3 @@
   </script>
 </body>
 </html>
-
-
