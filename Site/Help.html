@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Useful tools — MAX set</title>
+  <meta name="description" content="A large set of everyday tools in a single HTML file: calculator, converters (units/currency/data), timer/stopwatch, world clock, text utilities, contrast checker, password/UUID generator, date/time, loan calculator, JSON formatter, Base64/URL encoding, note pad with auto-save, image conversion, Markdown preview, CSV↔JSON, SHA-256."/>
+  <style>
+    :root{
+      --bg: #f7f7fb; --card: #ffffff; --text: #1f2937; --muted:#6b7280; --accent:#6366f1; --accent-2:#22c55e; --border:#e5e7eb; --shadow:0 10px 25px rgba(0,0,0,.06); --radius:18px;
+    }
+    .dark{ --bg:#0b1220; --card:#101827; --text:#e5e7eb; --muted:#9ca3af; --accent:#8b5cf6; --accent-2:#10b981; --border:#1f2a44; --shadow:0 10px 25px rgba(0,0,0,.35); }
+    html,body{height:100%}
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); line-height:1.45; }
+    header{ position:sticky; top:0; z-index:10; backdrop-filter: blur(10px); background: color-mix(in oklab, var(--bg) 75%, transparent); border-bottom:1px solid var(--border); }
+    .wrap{max-width:1200px; margin:0 auto; padding:18px}
+    .topbar{display:flex; gap:12px; align-items:center; justify-content:space-between}
+    .brand{display:flex; gap:12px; align-items:center; font-weight:800; letter-spacing:0.3px}
+    .brand .logo{width:36px; height:36px; display:grid; place-items:center; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:white; box-shadow: var(--shadow)}
+    .muted{color:var(--muted)}
+    .search{ flex:1; display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:14px; padding:10px 12px; background:var(--card); box-shadow:var(--shadow) }
+    .search input{border:0; outline:0; background:transparent; color:var(--text); width:100%; font-size:16px}
+    .btn{cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--text); padding:10px 14px; border-radius:12px; box-shadow:var(--shadow); font-weight:600}
+    .btn:hover{transform:translateY(-1px)}
+    main .grid{display:grid; gap:16px; grid-template-columns: repeat(12, 1fr); align-items:stretch}
+    @media (max-width: 1024px){ main .grid{grid-template-columns: repeat(6, 1fr);} }
+    @media (max-width: 640px){ main .grid{grid-template-columns: repeat(1, 1fr);} }
+    .tool{grid-column: span 6; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; min-height:220px}
+    .tool.wide{grid-column: span 12}
+    .tool header{position:relative; top:auto; backdrop-filter:none; border-bottom:1px dashed var(--border); background:transparent}
+    .tool header .wrap{padding:14px 16px}
+    .tool h2{margin:0; font-size:18px}
+    .tool .content{padding:16px; display:grid; gap:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .row > *{flex:1}
+    .row > label{flex:0 0 140px}
+    input[type="number"], input[type="text"], input[type="datetime-local"], select, textarea{ width:100%; box-sizing:border-box; border:1px solid var(--border); background:var(--bg); color:var(--text); padding:10px 12px; border-radius:10px; outline-color:var(--accent); font-size:15px }
+    textarea{min-height:120px; resize:vertical}
+    .pill{display:inline-flex; align-items:center; gap:8px; border-radius:999px; border:1px solid var(--border); padding:6px 10px; background:var(--bg)}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:var(--bg); padding:2px 6px; border-radius:6px; border:1px solid var(--border)}
+    .muted-sm{font-size:12px; color:var(--muted)}
+    .calc{display:grid; grid-template-columns: repeat(4, 1fr); gap:8px}
+    .calc-display{grid-column: 1 / -1; font-size:20px; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:12px; text-align:right; font-weight:700; min-height:48px}
+    .key{padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--card); cursor:pointer; font-weight:700; box-shadow:var(--shadow)}
+    .key.op{background: color-mix(in oklab, var(--accent) 18%, var(--card))}
+    .key.equals{background: color-mix(in oklab, var(--accent) 35%, var(--card))}
+    .key:hover{transform:translateY(-1px)}
+    .clock-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px}
+    .clock{border:1px dashed var(--border); border-radius:14px; padding:12px}
+    .clock h3{margin:0 0 6px 0; font-size:16px}
+    .swatches{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .swatch{border:1px dashed var(--border); border-radius:12px; padding:10px; display:grid; gap:8px}
+    .ratio{font-weight:800}
+    .badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border)}
+    table{border-collapse: collapse; width:100%}
+    th, td{border:1px solid var(--border); padding:8px; text-align:left}
+    th{background: color-mix(in oklab, var(--bg) 60%, var(--card))}
+    footer{opacity:.8; text-align:center; padding:24px 0 36px}
+    a{color:var(--accent)}
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+  <header aria-label="Navigation bar">
+    <div class="wrap topbar">
+      <div class="brand" aria-label="Brand and site name">
+        <div class="logo" aria-hidden="true">★</div>
+        <div>
+          <div>Useful tools — MAX</div>
+          <div class="muted" style="font-size:12px">1 file • works offline • available</div>
+        </div>
+      </div>
+      <label class="search" aria-label="Search for tools">
+        <span class="muted" aria-hidden="true">🔎</span>
+        <input id="q" type="text" placeholder="Search (calculator, currency, time, image, text, json, loan...)"/>
+        <span class="muted kbd" aria-hidden="true">/</span>
+      </label>
+      <button id="themeBtn" class="btn" aria-label="Toggle theme (light/dark)">🌓 Theme</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid" id="tools">
+      <section class="tool" data-tags="calculator calculator math calculation number" aria-labelledby="calc-title">
+        <header><div class="wrap"><h2 id="calc-title">Calculator</h2><div class="muted">Supports + − × ÷ %, parentheses, keyboard.</div></div></header>
+        <div class="content">
+          <div id="calcDisplay" class="calc-display" role="status" aria-live="polite">0</div>
+          <div class="calc" role="group" aria-label="Calculator keys">
+            <button class="key op" data-key="C" aria-label="Clear">C</button>
+            <button class="key op" data-key="(" aria-label="Open parenthesis">(</button>
+            <button class="key op" data-key=")" aria-label="Closed parenthesis">)</button>
+            <button class="key op" data-key="/" aria-label="Division">÷</button>
+            <button class="key" data-key="7">7</button>
+            <button class="key" data-key="8">8</button>
+            <button class="key" data-key="9">9</button>
+            <button class="key op" data-key="*" aria-label="Multiplication">×</button>
+            <button class="key" data-key="4">4</button>
+            <button class="key" data-key="5">5</button>
+            <button class="key" data-key="6">6</button>
+            <button class="key op" data-key="-" aria-label="Minus">−</button>
+            <button class="key" data-key="1">1</button>
+            <button class="key" data-key="2">2</button>
+            <button class="key" data-key="3">3</button>
+            <button class="key op" data-key="+" aria-label="Plus">+</button>
+            <button class="key" data-key="0">0</button>
+            <button class="key" data-key="." aria-label="Decimal point">.</button>
+            <button class="key op" data-key="⌫" aria-label="Backspace">⌫</button>
+            <button class="key equals" data-key="=" aria-label="Equals">=</button>
+          </div>
+          <div class="muted-sm">Tip: ⏎ — calculate, Backspace — erase.</div>
+        </div>
+      </section>
+      <section class="tool" data-tags="converter units length weight temperature volume speed area data bytes" aria-labelledby="conv-title">
+        <header><div class="wrap"><h2 id="conv-title">Unit Converter</h2><div class="muted">Length, mass, temperature, volume, speed, area, data.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="length">Length</option>
+              <option value="mass">Mass</option>
+              <option value="temp">Temperature</option>
+              <option value="volume">Volume</option>
+              <option value="speed">Speed</option>
+              <option value="area">Area</option>
+              <option value="data">Data</option>
+            </select>
+          </div>
+          <div class="row">
+            <label for="fromVal">Value</label>
+            <input id="fromVal" type="number" value="1" step="any" />
+          </div>
+          <div class="row">
+            <label for="fromUnit">From</label>
+            <select id="fromUnit"></select>
+            <button class="btn" id="swapBtn" aria-label="Swap">⇄</button>
+            <label for="toUnit" style="flex:0 0 auto">To</label>
+            <select id="toUnit"></select>
+          </div>
+          <div class="row">
+            <label for="toVal">Result</label>
+            <input id="toVal" type="text" readonly aria-readonly="true" />
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="currency exchange rate converter money money currency eur usd uah pln" aria-labelledby="fx-title">
+        <header><div class="wrap"><h2 id="fx-title">Currency Converter</h2><div class="muted">Works offline: rates can be edited and saved. Base — EUR = 1.00.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label for="fxAmount">Amount</label>
+            <input id="fxAmount" type="number" value="100" step="any"/>
+            <label for="fxFrom" style="flex:0 0 auto">From</label>
+            <select id="fxFrom"></select>
+            <label for="fxTo" style="flex:0 0 auto">To</label>
+            <select id="fxTo"></select>
+          </div>
+          <div class="row">
+            <label for="fxResult">Result</label>
+            <input id="fxResult" type="text" readonly/>
+          </div>
+          <details>
+            <summary class="pill">Rates (to EUR) • auto-save</summary>
+            <div class="row" id="fxRatesRow"></div>
+            <div class="muted-sm">Example: if 1 EUR = 1.10 USD, then enter 1.10 for USD. Data is saved in your browser.</div>
+          </details>
+        </div>
+      </section>
+      <section class="tool" data-tags="timer stopwatch productivity pomodoro pomodoro time" aria-labelledby="time-title">
+        <header><div class="wrap"><h2 id="time-title">Timer & Stopwatch</h2><div class="muted">Stopwatch and countdown timer with alarm. Has Pomodoro presets.</div></div></header>
+        <div class="content">
+          <div class="row" style="gap:14px">
+            <div class="pill"><strong>Stopwatch</strong></div>
+            <div id="swDisplay" class="pill" aria-live="polite">00:00.0</div>
+            <button class="btn" id="swStart">Start</button>
+            <button class="btn" id="swLap">Lap</button>
+            <button class="btn" id="swReset">Reset</button>
+          </div>
+          <div id="laps" class="row" style="flex-direction:column; align-items:stretch"></div>
+          <hr style="border:none; border-top:1px dashed var(--border)"/>
+          <div class="row" style="gap:14px; align-items:center">
+            <div class="pill"><strong>Timer</strong></div>
+            <button class="btn" data-pm="25-5">Pomodoro 25/5</button>
+            <button class="btn" data-pm="50-10">50/10</button>
+            <label for="cdMin" style="flex:0 0 auto">Min</label>
+            <input id="cdMin" type="number" min="0" value="1" style="max-width:120px"/>
+            <label for="cdSec" style="flex:0 0 auto">Sec</label>
+            <input id="cdSec" type="number" min="0" max="59" value="0" style="max-width:120px"/>
+            <div id="cdDisplay" class="pill">01:00</div>
+            <button class="btn" id="cdStart">Start</button>
+            <button class="btn" id="cdStop">Pause</button>
+            <button class="btn" id="cdReset">Reset</button>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="time world clock timezone converter world clock time" aria-labelledby="world-title">
+        <header><div class="wrap"><h2 id="world-title">World Clock + Time Converter</h2><div class="muted">Current time and conversion between time zones.</div></div></header>
+        <div class="content">
+          <div class="clock-grid" id="worldClock" role="list"></div>
+          <hr style="border:none; border-top:1px dashed var(--border)"/>
+          <div class="row">
+            <label style="flex:0 0 120px">Converter</label>
+            <input type="datetime-local" id="tzIn"/>
+            <select id="tzFrom"></select>
+            <span class="muted">→</span>
+            <select id="tzTo"></select>
+            <input id="tzOut" type="text" readonly/>
+          </div>
+        </div>
+      </section>
+      <section class="tool wide" data-tags="text tools case symbols words count formatting copy" aria-labelledby="text-title">
+        <header><div class="wrap"><h2 id="text-title">Text Utilities</h2><div class="muted">Change case, count characters/words, quick conversions.</div></div></header>
+        <div class="content">
+          <div class="row" style="align-items:flex-start">
+            <textarea id="txt" placeholder="Paste or type text here…"></textarea>
+          </div>
+          <div class="row">
+            <button class="btn" data-tx="upper">UPPERCASE</button>
+            <button class="btn" data-tx="lower">lowercase</button>
+            <button class="btn" data-tx="title">Title Case</button>
+            <button class="btn" data-tx="snake">snake_case</button>
+            <button class="btn" data-tx="kebab">kebab-case</button>
+            <button class="btn" data-tx="trim">Trim extra spaces</button>
+            <button class="btn" data-tx="copy">Copy</button>
+          </div>
+          <div class="row">
+            <div class="pill">Characters: <strong id="charCount">0</strong></div>
+            <div class="pill">Words: <strong id="wordCount">0</strong></div>
+            <div class="pill">Lines: <strong id="lineCount">0</strong></div>
+            <div class="pill">Estimated reading time: <strong id="readTime">0 min</strong></div>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="contrast accessibility colors wcag design a11y" aria-labelledby="contrast-title">
+        <header><div class="wrap"><h2 id="contrast-title">Contrast Checker (WCAG)</h2><div class="muted">Evaluates readability of color combinations.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label for="fg">Text Color</label>
+            <input id="fg" type="color" value="#111111"/>
+            <label for="bg">Background Color</label>
+            <input id="bg" type="color" value="#ffffff"/>
+          </div>
+          <div class="row">
+            <div class="pill">Ratio: <span id="ratio" class="ratio">—</span></div>
+            <div class="pill">AA (normal): <span id="aaN">—</span></div>
+            <div class="pill">AA (large): <span id="aaL">—</span></div>
+            <div class="pill">AAA (normal): <span id="aaaN">—</span></div>
+            <div class="pill">AAA (large): <span id="aaaL">—</span></div>
+          </div>
+          <div class="swatches">
+            <div class="swatch" id="sample1">
+              <div class="badge">Sample 1</div>
+              <div contenteditable="true" style="padding:8px; border-radius:8px; border:1px dashed var(--border)">This is a sample text. You can edit it.</div>
+            </div>
+            <div class="swatch" id="sample2">
+              <div class="badge">Sample 2</div>
+              <div contenteditable="true" style="padding:8px; border-radius:8px; border:1px dashed var(--border)">Another sample — editable too.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="passwords password generator security uuid random" aria-labelledby="pass-title">
+        <header><div class="wrap"><h2 id="pass-title">Password Generator / UUID</h2><div class="muted">Secure random strings offline. Entropy check.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label>Length</label><input id="pwLen" type="number" value="16" min="4" max="128" style="max-width:120px"/>
+            <label><input type="checkbox" id="pwL" checked/> a-z</label>
+            <label><input type="checkbox" id="pwU" checked/> A-Z</label>
+            <label><input type="checkbox" id="pwD" checked/> 0-9</label>
+            <label><input type="checkbox" id="pwS"/> !@#$…</label>
+            <button class="btn" id="pwGen">Generate</button>
+          </div>
+          <div class="row">
+            <input id="pwOut" type="text" readonly>
+            <div class="pill">Entropy ≈ <span id="pwEnt">0</span> bits</div>
+            <button class="btn" id="pwCopy">Copy</button>
+            <button class="btn" id="uuidGen">UUID v4</button>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="dates date difference add days calculator" aria-labelledby="date-title">
+        <header><div class="wrap"><h2 id="date-title">Dates: Difference & Addition</h2><div class="muted">Calculates the difference between dates and adds/subtracts days.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label>From</label><input type="date" id="d1">
+            <label>To</label><input type="date" id="d2">
+            <input id="dDiff" type="text" readonly>
+          </div>
+          <div class="row">
+            <label>Add to</label><input type="date" id="dBase">
+            <label>Days ±</label><input type="number" id="dOffset" value="7">
+            <input id="dResult" type="text" readonly>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="loan mortgage calculation annuity payment finance" aria-labelledby="loan-title">
+        <header><div class="wrap"><h2 id="loan-title">Loan Calculator (Annuity)</h2><div class="muted">Monthly payment, total interest, schedule.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <label>Amount</label><input id="loanSum" type="number" value="100000">
+            <label>Annual Rate, %</label><input id="loanAPR" type="number" value="10" step="0.01">
+            <label>Term, years</label><input id="loanYears" type="number" value="10" step="1">
+            <button class="btn" id="loanCalc">Calculate</button>
+          </div>
+          <div class="row">
+            <div class="pill">Monthly Payment: <strong id="loanPMT">—</strong></div>
+            <div class="pill">Total Payments: <strong id="loanTotal">—</strong></div>
+            <div class="pill">Interest: <strong id="loanInterest">—</strong></div>
+            <button class="btn" id="loanScheduleBtn">Show/Hide Schedule</button>
+          </div>
+          <div id="loanSchedule" class="hidden" style="max-height:300px; overflow:auto"></div>
+        </div>
+      </section>
+      <section class="tool" data-tags="json formatter validator minimizer pretty print" aria-labelledby="json-title">
+        <header><div class="wrap"><h2 id="json-title">JSON: format / validate</h2><div class="muted">Pretty formatting, minification, validation.</div></div></header>
+        <div class="content">
+          <div class="row" style="align-items:flex-start">
+            <textarea id="jsonIn" placeholder='Paste JSON here'></textarea>
+          </div>
+          <div class="row">
+            <button class="btn" id="jsonPretty">Format</button>
+            <button class="btn" id="jsonMin">Minify</button>
+            <button class="btn" id="jsonCopy">Copy</button>
+            <div class="pill">Status: <strong id="jsonStatus">—</strong></div>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="base64 url ​​encoding decoding" aria-labelledby="enc-title">
+        <header><div class="wrap"><h2 id="enc-title">Encoding: Base64 / URL</h2><div class="muted">String conversion.</div></div></header>
+        <div class="content">
+          <div class="row"><textarea id="encIn" placeholder="Enter text here"></textarea></div>
+          <div class="row">
+            <button class="btn" id="b64e">→ Base64</button>
+            <button class="btn" id="b64d">Base64 →</button>
+            <button class="btn" id="urle">→ URL encode</button>
+            <button class="btn" id="urld">URL decode →</button>
+          </div>
+          <div class="row"><textarea id="encOut" placeholder="Result…" readonly></textarea></div>
+        </div>
+      </section>
+      <section class="tool" data-tags="notes notebook notebook autosave save" aria-labelledby="notes-title">
+        <header><div class="wrap"><h2 id="notes-title">Notes (autosave)</h2><div class="muted">Saved in browser, supports search.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <input id="noteTitle" placeholder="Title"/>
+            <input id="noteSearch" placeholder="Search…"/>
+            <button class="btn" id="noteNew">New</button>
+            <button class="btn" id="noteDel">Delete</button>
+          </div>
+          <div class="row" style="align-items:flex-start">
+            <div style="flex:1">
+              <ul id="noteList" style="list-style:none; padding:0; margin:0; max-height:240px; overflow:auto"></ul>
+            </div>
+            <textarea id="noteBody" style="flex:2" placeholder="Note text…"></textarea>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="image compression resize convert jpeg png webp photo" aria-labelledby="img-title">
+        <header><div class="wrap"><h2 id="img-title">Image: compress / resize</h2><div class="muted">Works on device, no internet.</div></div></header>
+        <div class="content">
+          <div class="row">
+            <input type="file" id="imgFile" accept="image/*"/>
+            <label>Max width</label><input type="number" id="imgW" value="1280">
+            <label>Max height</label><input type="number" id="imgH" value="1280">
+            <label>Format</label>
+            <select id="imgFmt"><option>jpeg</option><option>png</option><option>webp</option></select>
+            <label>Quality</label><input type="range" id="imgQ" min="0.1" max="1" step="0.05" value="0.8">
+            <button class="btn" id="imgGo">Process</button>
+          </div>
+          <div class="row" id="imgPreview" style="align-items:flex-start"></div>
+        </div>
+      </section>
+      <section class="tool" data-tags="markdown md preview render text" aria-labelledby="md-title">
+        <header><div class="wrap"><h2 id="md-title">Markdown preview</h2><div class="muted">Quick preview without external libraries (basic syntax).</div></div></header>
+        <div class="content">
+          <div class="row" style="align-items:flex-start">
+            <textarea id="mdIn" placeholder="# Heading
+
+**bold** *italic* `code`
+
+- item 1
+- item 2"></textarea>
+            <div id="mdOut" style="flex:1; border:1px dashed var(--border); border-radius:10px; padding:10px; background:var(--bg);"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool" data-tags="csv json converter tabular data" aria-labelledby="csv-title">
+        <header><div class="wrap"><h2 id="csv-title">CSV ↔ JSON</h2><div class="muted">Conversion with support for quotes.</div></div></header>
+        <div class="content">
+          <div class="row" style="align-items:flex-start">
+            <textarea id="csvIn" placeholder="name,age
+Alice,30
+Bob,25"></textarea>
+            <textarea id="csvOut" placeholder="Result…"></textarea>
+          </div>
+          <div class="row">
+            <button class="btn" id="csv2json">CSV → JSON</button>
+            <button class="btn" id="json2csv">JSON → CSV</button>
+          </div>
+        </div>
+      </section>
+      <section class="tool" data-tags="hash sha256 checksum file security" aria-labelledby="hash-title">
+        <header><div class="wrap"><h2 id="hash-title">SHA‑256 hash of file/text</h2><div class="muted">Integrity check locally.</div></div></header>
+        <div class="content">
+          <div class="row"><input type="file" id="hashFile"><input id="hashOut" placeholder="Hash…" readonly></div>
+          <div class="row"><input id="hashText" placeholder="or enter text…"><button class="btn" id="hashTextBtn">Calculate</button></div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer>
+      Made with ❤️ for all. Tip: press <span class="kbd">/</span> to quickly search. • No libraries, one HTML file. • Data stored in your browser's local storage.
+    </footer>
+  </main>
+
+  <script>
+    const themeBtn = document.getElementById('themeBtn');
+    if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+    themeBtn.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    const q = document.getElementById('q');
+    const tools = Array.from(document.querySelectorAll('.tool'));
+    const filterTools = ()=>{
+      const term = q.value.toLowerCase().trim();
+      tools.forEach(t=>{
+        const text = (t.innerText + ' ' + (t.dataset.tags||'')).toLowerCase();
+        t.classList.toggle('hidden', term && !text.includes(term));
+      });
+    };
+    q.addEventListener('input', filterTools);
+    window.addEventListener('keydown', (e)=>{ if(e.key === '/' && document.activeElement !== q){ e.preventDefault(); q.focus(); } });
+
+    const cd = document.getElementById('calcDisplay');
+    let expr = '';
+    const allowed = /^[0-9+\-*/().%\s]+$/;
+    const updateDisplay = ()=> cd.textContent = expr || '0'; updateDisplay();
+    document.querySelectorAll('.calc .key').forEach(btn=> btn.addEventListener('click', ()=> handleKey(btn.dataset.key)));
+    function handleKey(k){ if(k==='C'){ expr=''; return updateDisplay(); } if(k==='⌫'){ expr = expr.slice(0,-1); return updateDisplay(); } if(k==='='){ return evaluate(); } expr += k; updateDisplay(); }
+    function evaluate(){ const e = expr.replace(/×/g,'*').replace(/÷/g,'/'); if(!allowed.test(e)){ cd.textContent='Error'; return; } try{ expr = String(Function('"use strict";return ('+ e +')')()); }catch(_){ expr='Error'; } updateDisplay(); }
+    window.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') return evaluate(); if(ev.key==='Backspace') return handleKey('⌫'); if('0123456789+-*/().%'.includes(ev.key)) return handleKey(ev.key); });
+
+    const category = document.getElementById('category');
+    const fromUnit = document.getElementById('fromUnit');
+    const toUnit = document.getElementById('toUnit');
+    const fromVal = document.getElementById('fromVal');
+    const toVal = document.getElementById('toVal');
+    const swapBtn = document.getElementById('swapBtn');
+    const units = {
+      length: { m:1, km:1000, cm:0.01, mm:0.001, mi:1609.344, yd:0.9144, ft:0.3048, in:0.0254 },
+      mass: { kg:1, g:0.001, mg:0.000001, lb:0.45359237, oz:0.028349523125, t:1000 },
+      volume: { l:1, ml:0.001, m3:1000, galUS:3.785411784, qtUS:0.946352946, cup:0.2365882365 },
+      temp: { C:'C', F:'F', K:'K' },
+      speed: { 'm/s':1, 'km/h':1/3.6, 'mph':0.44704, 'kn':0.514444 },
+      area: { m2:1, km2:1e6, ha:1e4, a:100, ft2:0.09290304, yd2:0.83612736, in2:0.00064516 },
+      data: { B:1, KB:1024, MB:1024**2, GB:1024**3, TB:1024**4 }
+    };
+    function populateUnits(){ const cat = category.value; fromUnit.innerHTML=''; toUnit.innerHTML=''; Object.keys(units[cat]).forEach(u=>{ fromUnit.add(new Option(u,u)); toUnit.add(new Option(u,u)); }); if(cat==='length'){fromUnit.value='m';toUnit.value='km';} if(cat==='mass'){fromUnit.value='kg';toUnit.value='lb';} if(cat==='volume'){fromUnit.value='l';toUnit.value='ml';} if(cat==='temp'){fromUnit.value='C';toUnit.value='F';} if(cat==='speed'){fromUnit.value='km/h';toUnit.value='m/s';} if(cat==='area'){fromUnit.value='m2';toUnit.value='ft2';} if(cat==='data'){fromUnit.value='MB';toUnit.value='GB';} convert(); }
+    function convert(){ const cat=category.value; const v=parseFloat(fromVal.value||'0'); let out=0; if(cat==='temp'){ const f=fromUnit.value,t=toUnit.value; if(f===t) out=v; else if(f==='C'&&t==='F') out=v*9/5+32; else if(f==='F'&&t==='C') out=(v-32)*5/9; else if(f==='C'&&t==='K') out=v+273.15; else if(f==='K'&&t==='C') out=v-273.15; else if(f==='F'&&t==='K') out=(v-32)*5/9+273.15; else if(f==='K'&&t==='F') out=(v-273.15)*9/5+32; } else { const map=units[cat]; const base=v*map[fromUnit.value]; out=base/map[toUnit.value]; } toVal.value = Number.isFinite(out) ? out.toLocaleString(undefined,{maximumFractionDigits:8}) : '—'; }
+    category.addEventListener('change', populateUnits); fromUnit.addEventListener('change', convert); toUnit.addEventListener('change', convert); fromVal.addEventListener('input', convert); swapBtn.addEventListener('click', ()=>{ const t=fromUnit.value; fromUnit.value=toUnit.value; toUnit.value=t; convert(); }); populateUnits();
+
+    const fxCurrencies = ['EUR','USD','UAH','PLN','GBP','CHF','JPY'];
+    const fxDefaults = {EUR:1, USD:1.1, UAH:45, PLN:4.3, GBP:0.85, CHF:0.98, JPY:170};
+    const fxRatesKey = 'fxRatesV1';
+    let fxRates = JSON.parse(localStorage.getItem(fxRatesKey) || 'null') || fxDefaults;
+    const fxFrom = document.getElementById('fxFrom'); const fxTo = document.getElementById('fxTo'); const fxAmount = document.getElementById('fxAmount'); const fxResult = document.getElementById('fxResult'); const fxRatesRow = document.getElementById('fxRatesRow');
+    fxCurrencies.forEach(c=>{ fxFrom.add(new Option(c,c)); fxTo.add(new Option(c,c)); const w=document.createElement('div'); w.className='row'; w.innerHTML=`<label style="flex:0 0 80px">${c}</label><input type="number" step="any" data-rate="${c}" value="${fxRates[c]??''}">`; fxRatesRow.appendChild(w); }); fxFrom.value='EUR'; fxTo.value='USD';
+    fxRatesRow.addEventListener('input', ()=>{ fxRates = Object.fromEntries(Array.from(fxRatesRow.querySelectorAll('[data-rate]')).map(i=>[i.dataset.rate, Number(i.value||0)])); localStorage.setItem(fxRatesKey, JSON.stringify(fxRates)); fxConvert(); });
+    [fxFrom,fxTo,fxAmount].forEach(el=> el.addEventListener('input', fxConvert));
+    function fxConvert(){ const amt=Number(fxAmount.value||0); const rFrom=fxRates[fxFrom.value]; const rTo=fxRates[fxTo.value]; const eur = amt / rFrom; const out = eur * rTo; fxResult.value = Number.isFinite(out) ? out.toLocaleString(undefined,{maximumFractionDigits:6})+` ${fxTo.value}` : '—'; }
+    fxConvert();
+
+    const swDisplay = document.getElementById('swDisplay'); const swStart = document.getElementById('swStart'); const swLap = document.getElementById('swLap'); const swReset = document.getElementById('swReset'); const laps = document.getElementById('laps');
+    let swRunning=false, swStartTime=0, swElapsed=0, swTimer=null, lastLap=0, lapIdx=1;
+    const fmt=(ms)=>{ const t=Math.floor(ms); const m=Math.floor(t/60000), s=Math.floor((t%60000)/1000), d=Math.floor((t%1000)/100); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${d}`; };
+    const tick=()=>{ const now=performance.now(); const ms= now - swStartTime + swElapsed; swDisplay.textContent = fmt(ms); };
+    swStart.addEventListener('click', ()=>{ if(!swRunning){ swRunning=true; swStart.textContent='Pause'; swStartTime=performance.now(); swTimer=setInterval(tick, 80); } else { swRunning=false; swStart.textContent='Start'; clearInterval(swTimer); swElapsed += performance.now()-swStartTime; } });
+    swLap.addEventListener('click', ()=>{ const total=swRunning ? (performance.now()-swStartTime+swElapsed) : swElapsed; const lapTime=total-lastLap; lastLap=total; const item=document.createElement('div'); item.className='pill'; item.textContent=`Lap ${lapIdx++}: ${fmt(lapTime)} (total ${fmt(total)})`; laps.prepend(item); });
+    swReset.addEventListener('click', ()=>{ swRunning=false; clearInterval(swTimer); swElapsed=0; lastLap=0; lapIdx=1; swDisplay.textContent='00:00.0'; swStart.textContent='Start'; laps.innerHTML=''; });
+
+    const cdMin = document.getElementById('cdMin'); const cdSec = document.getElementById('cdSec'); const cdDisplay = document.getElementById('cdDisplay'); const cdStart = document.getElementById('cdStart'); const cdStop = document.getElementById('cdStop'); const cdReset = document.getElementById('cdReset');
+    let cdLeft=60000, cdTimer=null, cdRunning=false, cdTarget=0;
+    const cdUpdateLabel=()=>{ const s=Math.max(0, Math.floor(cdLeft/1000)); const m=Math.floor(s/60), r=s%60; cdDisplay.textContent=`${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`; };
+    const cdRecalc=()=>{ cdLeft=(Number(cdMin.value||0)*60 + Number(cdSec.value||0))*1000; cdUpdateLabel(); };
+    cdMin.addEventListener('input', cdRecalc); cdSec.addEventListener('input', cdRecalc); cdRecalc();
+    function beep(){ try{ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.2, ctx.currentTime); o.start(); o.stop(ctx.currentTime+0.5);}catch(_){}};
+    function flash(el){ el.animate([{background:'var(--accent)', color:'#fff'},{background:'', color:''}],{duration:900, iterations:2}); }
+    function cdTick(){ const now=Date.now(); cdLeft=Math.max(0, cdTarget-now); cdUpdateLabel(); if(cdLeft<=0){ clearInterval(cdTimer); cdRunning=false; flash(cdDisplay); beep(); } }
+    cdStart.addEventListener('click', ()=>{ if(cdRunning) return; cdRunning=true; cdTarget=Date.now()+cdLeft; cdTimer=setInterval(cdTick, 200); });
+    cdStop.addEventListener('click', ()=>{ if(!cdRunning) return; cdRunning=false; clearInterval(cdTimer); cdLeft=Math.max(0, cdTarget-Date.now()); });
+    cdReset.addEventListener('click', ()=>{ cdRunning=false; clearInterval(cdTimer); cdRecalc(); });
+    document.querySelectorAll('[data-pm]')?.forEach(b=> b.addEventListener('click', ()=>{ const [w,br]=b.dataset.pm.split('-').map(Number); cdMin.value=w; cdSec.value=0; cdRecalc(); }));
+
+    const zones=[ {city:'Warsaw', tz:'Europe/Warsaw'}, {city:'London', tz:'Europe/London'}, {city:'Berlin', tz:'Europe/Berlin'}, {city:'New York', tz:'America/New_York'}, {city:'Los Angeles', tz:'America/Los_Angeles'}, {city:'Tokyo', tz:'Asia/Tokyo'}, {city:'Delhi', tz:'Asia/Kolkata'}, {city:'Sydney', tz:'Australia/Sydney'}, {city:'UTC', tz:'UTC'} ];
+    const wc = document.getElementById('worldClock');
+    zones.forEach(z=>{ const d=document.createElement('div'); d.className='clock'; d.setAttribute('role','listitem'); d.innerHTML=`<h3>${z.city}</h3><div class="muted">${z.tz}</div><div class="time" aria-live="polite">—</div>`; wc.appendChild(d); z.el=d.querySelector('.time'); });
+    function updateClocks(){ const now=new Date(); zones.forEach(z=>{ z.el.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:z.tz}).format(now); }); }
+    updateClocks(); setInterval(updateClocks, 1000);
+    const tzIn=document.getElementById('tzIn'); const tzFrom=document.getElementById('tzFrom'); const tzTo=document.getElementById('tzTo'); const tzOut=document.getElementById('tzOut');
+    const allTZ=['UTC','Europe/Warsaw','Europe/London','Europe/Berlin','Europe/Paris','Europe/Kyiv','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','Asia/Tokyo','Asia/Shanghai','Asia/Kolkata','Australia/Sydney'];
+    allTZ.forEach(t=>{ tzFrom.add(new Option(t,t)); tzTo.add(new Option(t,t)); }); tzFrom.value='Europe/Warsaw'; tzTo.value='UTC'; tzIn.value = new Date().toISOString().slice(0,16);
+    function partsAt(t, tz){ const f=new Intl.DateTimeFormat('en-GB',{timeZone:tz, hourCycle:'h23', year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); const p=Object.fromEntries(f.formatToParts(t).map(o=>[o.type,o.value])); return {y:+p.year,m:+p.month,d:+p.day,h:+p.hour,mi:+p.minute}; }
+    function wallToEpoch(y,m,d,h,mi, tz){
+      let guess = Date.UTC(y,m-1,d,h,mi);
+      for(let i=0;i<4;i++){ const p=partsAt(guess, tz); const deltaMin = ((y-p.y)*525600) + ((m-p.m)*43200) + ((d-p.d)*1440) + ((h-p.h)*60) + (mi-p.mi); if(Math.abs(deltaMin)<1) break; guess += deltaMin*60000; }
+      return guess;
+    }
+    function tzConvert(){ if(!tzIn.value) return; const [Y,M,D,HM]=tzIn.value.split(/[-T]/); const [h,mi]=(HM||'00:00').split(':'); const epoch = wallToEpoch(+Y,+M,+D,+h,+mi, tzFrom.value); const out = new Intl.DateTimeFormat(undefined,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit', timeZone:tzTo.value, hour12:false}).format(new Date(epoch)); tzOut.value = out; }
+    [tzIn,tzFrom,tzTo].forEach(e=> e.addEventListener('input', tzConvert)); tzConvert();
+
+    const txt=document.getElementById('txt'); const charCount=document.getElementById('charCount'); const wordCount=document.getElementById('wordCount'); const lineCount=document.getElementById('lineCount'); const readTime=document.getElementById('readTime');
+    function updateCounts(){ const v=txt.value; const words=(v.match(/\b\w+\b/g)||[]).length; charCount.textContent=v.length; wordCount.textContent=words; lineCount.textContent=v.split(/\n/).length; readTime.textContent = `${Math.max(1, Math.round(words/200))} min`; }
+    txt.addEventListener('input', updateCounts); updateCounts();
+    document.querySelectorAll('[data-tx]').forEach(b=> b.addEventListener('click', ()=>{ const t=b.dataset.tx; let v=txt.value; if(t==='upper') v=v.toUpperCase(); if(t==='lower') v=v.toLowerCase(); if(t==='title') v=v.replace(/\w\S*/g,s=> s[0].toUpperCase()+s.slice(1).toLowerCase()); if(t==='snake') v=v.trim().replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_+|_+$/g,'').toLowerCase(); if(t==='kebab') v=v.trim().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-+|-+$/g,'').toLowerCase(); if(t==='trim') v=v.replace(/\s+/g,' ').trim(); if(t==='copy'){ navigator.clipboard?.writeText(v); b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy',1200); return;} txt.value=v; updateCounts(); }));
+
+    const fg=document.getElementById('fg'); const bg=document.getElementById('bg'); const ratioEl=document.getElementById('ratio'); const aaN=document.getElementById('aaN'); const aaL=document.getElementById('aaL'); const aaaN=document.getElementById('aaaN'); const aaaL=document.getElementById('aaaL'); const sample1=document.getElementById('sample1'); const sample2=document.getElementById('sample2');
+    function hexToRgb(h){ h=h.replace('#',''); if(h.length===3) h=[...h].map(c=>c+c).join(''); const n=parseInt(h,16); return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 } }
+    function srgb(c){ c/=255; return c<=0.03928? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+    function luminance(hex){ const {r,g,b}=hexToRgb(hex); return 0.2126*srgb(r)+0.7152*srgb(g)+0.0722*srgb(b); }
+    function contrast(a,b){ const L1=Math.max(a,b), L2=Math.min(a,b); return (L1+0.05)/(L2+0.05); }
+    function updateContrast(){ const Lf=luminance(fg.value), Lb=luminance(bg.value); const r=contrast(Lf,Lb); ratioEl.textContent=r.toFixed(2)+':1'; aaN.textContent=r>=4.5?'✅ yes':'❌ no'; aaL.textContent=r>=3?'✅ yes':'❌ no'; aaaN.textContent=r>=7?'✅ yes':'❌ no'; aaaL.textContent=r>=4.5?'✅ yes':'❌ no'; sample1.style.color=fg.value; sample1.style.background=bg.value; sample2.style.color=bg.value; sample2.style.background=fg.value; }
+    fg.addEventListener('input', updateContrast); bg.addEventListener('input', updateContrast); updateContrast();
+
+    const rand = (n)=> crypto.getRandomValues(new Uint32Array(n));
+    const pwLen=document.getElementById('pwLen'); const pwL=document.getElementById('pwL'); const pwU=document.getElementById('pwU'); const pwD=document.getElementById('pwD'); const pwS=document.getElementById('pwS'); const pwOut=document.getElementById('pwOut'); const pwEnt=document.getElementById('pwEnt');
+    function gen(){ let chars=''; if(pwL.checked) chars+='abcdefghijklmnopqrstuvwxyz'; if(pwU.checked) chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ'; if(pwD.checked) chars+='0123456789'; if(pwS.checked) chars+='!@#$%^&*()-_=+[]{};:,.?/'; if(!chars) return; const L=Math.min(128, Math.max(4, Number(pwLen.value||16))); const nums=rand(L); let out=''; for(let i=0;i<L;i++){ out+=chars[nums[i]%chars.length]; } pwOut.value=out; pwEnt.textContent= (L*Math.log2(chars.length)).toFixed(1); }
+    document.getElementById('pwGen').addEventListener('click', gen);
+    document.getElementById('pwCopy').addEventListener('click', ()=> navigator.clipboard?.writeText(pwOut.value));
+    document.getElementById('uuidGen').addEventListener('click', ()=>{ const b=new Uint8Array(16); crypto.getRandomValues(b); b[6]=(b[6]&0x0f)|0x40; b[8]=(b[8]&0x3f)|0x80; const hex=[...b].map(x=>x.toString(16).padStart(2,'0')); const s=`${hex.slice(0,4).join('')}${hex[4]}${hex[5]}-${hex[6]}${hex[7]}-${hex[8]}${hex[9]}-${hex[10]}${hex[11]}-${hex.slice(12).join('')}`; pwOut.value=s; pwEnt.textContent='122.0'; });
+
+    const d1=document.getElementById('d1'), d2=document.getElementById('d2'), dDiff=document.getElementById('dDiff'); const dBase=document.getElementById('dBase'), dOffset=document.getElementById('dOffset'), dResult=document.getElementById('dResult');
+    function pad(n){return String(n).padStart(2,'0');}
+    const today = new Date(); const isoDate=(d)=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    d1.value = isoDate(today); d2.value = isoDate(new Date(today.getTime()+86400000)); dBase.value=isoDate(today);
+    function dateDiff(){ const a=new Date(d1.value), b=new Date(d2.value); const ms=b - a; const days=Math.round(ms/86400000); dDiff.value = `${days} days (${(days/7).toFixed(2)} weeks)`; }
+    function dateAdd(){ const base=new Date(dBase.value); const out=new Date(base.getTime() + Number(dOffset.value||0)*86400000); dResult.value = isoDate(out); }
+    [d1,d2].forEach(e=> e.addEventListener('input', dateDiff)); [dBase,dOffset].forEach(e=> e.addEventListener('input', dateAdd)); dateDiff(); dateAdd();
+
+    const loanSum=document.getElementById('loanSum'), loanAPR=document.getElementById('loanAPR'), loanYears=document.getElementById('loanYears');
+    const loanPMT=document.getElementById('loanPMT'), loanTotal=document.getElementById('loanTotal'), loanInterest=document.getElementById('loanInterest');
+    const loanCalc=document.getElementById('loanCalc'), loanScheduleBtn=document.getElementById('loanScheduleBtn'), loanSchedule=document.getElementById('loanSchedule');
+    function calcLoan(){ const P=Number(loanSum.value||0), r=Number(loanAPR.value||0)/100/12, n=Math.round(Number(loanYears.value||0)*12); const pmt = r===0? P/n : P*r/(1-Math.pow(1+r,-n)); const total=pmt*n, interest=total-P; loanPMT.textContent=pmt.toFixed(2); loanTotal.textContent=total.toFixed(2); loanInterest.textContent=interest.toFixed(2);
+      let bal=P, rows=['<table><thead><tr><th>Month</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead><tbody>']; for(let i=1;i<=n;i++){ const interest=bal*r; const principal=pmt - interest; bal = Math.max(0, bal - principal); rows.push(`<tr><td>${i}</td><td>${pmt.toFixed(2)}</td><td>${interest.toFixed(2)}</td><td>${principal.toFixed(2)}</td><td>${bal.toFixed(2)}</td></tr>`); if(bal<=0) break; } rows.push('</tbody></table>'); loanSchedule.innerHTML=rows.join(''); }
+    loanCalc.addEventListener('click', calcLoan); loanScheduleBtn.addEventListener('click', ()=> loanSchedule.classList.toggle('hidden')); calcLoan();
+
+    const jsonIn=document.getElementById('jsonIn'), jsonStatus=document.getElementById('jsonStatus');
+    document.getElementById('jsonPretty').addEventListener('click', ()=>{ try{ const obj=JSON.parse(jsonIn.value); jsonIn.value=JSON.stringify(obj,null,2); jsonStatus.textContent='✔ Valid'; }catch(e){ jsonStatus.textContent='✖ Invalid: '+e.message; } });
+    document.getElementById('jsonMin').addEventListener('click', ()=>{ try{ const obj=JSON.parse(jsonIn.value); jsonIn.value=JSON.stringify(obj); jsonStatus.textContent='✔ Minimized'; }catch(e){ jsonStatus.textContent='✖ Invalid: '+e.message; } });
+    document.getElementById('jsonCopy').addEventListener('click', ()=> navigator.clipboard?.writeText(jsonIn.value));
+
+    const encIn=document.getElementById('encIn'), encOut=document.getElementById('encOut');
+    const te=new TextEncoder(), td=new TextDecoder();
+    function toBase64(str){ const b=te.encode(str); let s=''; b.forEach(x=> s+=String.fromCharCode(x)); return btoa(s); }
+    function fromBase64(b64){ const s=atob(b64); const b=new Uint8Array([...s].map(c=>c.charCodeAt(0))); return td.decode(b); }
+    document.getElementById('b64e').addEventListener('click', ()=> encOut.value = toBase64(encIn.value));
+    document.getElementById('b64d').addEventListener('click', ()=> { try{ encOut.value = fromBase64(encIn.value.trim()); }catch(e){ encOut.value='Error decoding'; } });
+    document.getElementById('urle').addEventListener('click', ()=> encOut.value = encodeURIComponent(encIn.value));
+    document.getElementById('urld').addEventListener('click', ()=> { try{ encOut.value = decodeURIComponent(encIn.value); }catch(e){ encOut.value='Error decoding'; } });
+
+    const noteTitle=document.getElementById('noteTitle'), noteBody=document.getElementById('noteBody'), noteList=document.getElementById('noteList'), noteSearch=document.getElementById('noteSearch');
+    const noteNew=document.getElementById('noteNew'), noteDel=document.getElementById('noteDel'); const NOTES_KEY='notesV1';
+    let notes = JSON.parse(localStorage.getItem(NOTES_KEY)||'[]'); let currentId=null;
+    function saveNotes(){ localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); }
+    function renderList(){ const q=noteSearch.value.toLowerCase().trim(); noteList.innerHTML=''; notes.filter(n=> !q || n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)).forEach(n=>{ const li=document.createElement('li'); li.style.padding='8px 10px'; li.style.borderBottom='1px dashed var(--border)'; li.textContent=n.title||'(no title)'; li.tabIndex=0; li.addEventListener('click', ()=> openNote(n.id)); noteList.appendChild(li); }); }
+    function openNote(id){ currentId=id; const n=notes.find(x=>x.id===id); if(!n) return; noteTitle.value=n.title; noteBody.value=n.body; }
+    noteNew.addEventListener('click', ()=>{ const id = Date.now(); const n={id, title:'Note '+new Date().toLocaleString(), body:''}; notes.unshift(n); saveNotes(); renderList(); openNote(id); });
+    noteDel.addEventListener('click', ()=>{ if(currentId==null) return; notes=notes.filter(n=> n.id!==currentId); currentId=null; noteTitle.value=''; noteBody.value=''; saveNotes(); renderList(); });
+    noteTitle.addEventListener('input', ()=>{ if(currentId==null) return; const n=notes.find(x=>x.id===currentId); n.title=noteTitle.value; saveNotes(); renderList(); });
+    noteBody.addEventListener('input', ()=>{ if(currentId==null) return; const n=notes.find(x=>x.id===currentId); n.body=noteBody.value; saveNotes(); });
+    noteSearch.addEventListener('input', renderList); renderList();
+
+    const imgFile=document.getElementById('imgFile'), imgW=document.getElementById('imgW'), imgH=document.getElementById('imgH'), imgFmt=document.getElementById('imgFmt'), imgQ=document.getElementById('imgQ'), imgGo=document.getElementById('imgGo'), imgPreview=document.getElementById('imgPreview');
+    function fileSize(bytes){ const u=['B','KB','MB','GB']; let i=0, n=bytes; while(n>=1024 && i<u.length-1){ n/=1024; i++; } return n.toFixed(2)+' '+u[i]; }
+    imgGo.addEventListener('click', async()=>{ const f=imgFile.files?.[0]; if(!f) return; const url=URL.createObjectURL(f); const img=new Image(); img.src=url; await img.decode(); const maxW=+imgW.value, maxH=+imgH.value; let w=img.naturalWidth, h=img.naturalHeight; const k=Math.min(1, maxW/w, maxH/h); w=Math.round(w*k); h=Math.round(h*k); const c=document.createElement('canvas'); c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(img, 0,0,w,h); const type={'jpeg':'image/jpeg','png':'image/png','webp':'image/webp'}[imgFmt.value]||'image/jpeg'; const blob=await new Promise(res=> c.toBlob(res, type, Number(imgQ.value))); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download = 'image.'+imgFmt.value; a.textContent='Download processed image'; const before=document.createElement('div'); before.innerHTML=`<div class="pill">Was: ${w}×${h} • ${fileSize(f.size)}</div>`; const after=document.createElement('div'); after.innerHTML=`<div class="pill">Became: ${w}×${h} • ${fileSize(blob.size||0)}</div>`; const preview=document.createElement('img'); preview.style.maxWidth='100%'; preview.src=a.href; imgPreview.innerHTML=''; imgPreview.append(before, after, a, preview); });
+
+    const mdIn=document.getElementById('mdIn'), mdOut=document.getElementById('mdOut');
+    function escapeHtml(s){return s.replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+    function renderMD(src){
+      let s=src;
+      s = s.replace(/^###### (.*)$/gm,'<h6>$1</h6>')
+           .replace(/^##### (.*)$/gm,'<h5>$1</h5>')
+           .replace(/^#### (.*)$/gm,'<h4>$1</h4>')
+           .replace(/^### (.*)$/gm,'<h3>$1</h3>')
+           .replace(/^## (.*)$/gm,'<h2>$1</h2>')
+           .replace(/^# (.*)$/gm,'<h1>$1</h1>');
+      s = s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`([^`]+?)`/g,'<code>$1</code>');
+      s = s.replace(/^- (.*)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/g, m=>'<ul>'+m.replace(/\n/g,'')+'</ul>');
+      s = s.split('\n').map(x=> /^<h\d|^<ul>|^<li>|^<p>|^<\/ul>|^<code>|^<\/code>/.test(x)? x : (x.trim()? `<p>${x}</p>` : '')).join('\n');
+      s = s.replace(/<(\/?)li>/g,'<$1li>');
+      mdOut.innerHTML = s;
+    }
+    mdIn.addEventListener('input', ()=> renderMD(escapeHtml(mdIn.value))); renderMD(escapeHtml(mdIn.value));
+
+    const csvIn=document.getElementById('csvIn'), csvOut=document.getElementById('csvOut');
+    function parseCSV(text){ const rows=[]; let i=0, cur='', row=[], q=false; while(i<text.length){ const c=text[i++]; if(q){ if(c=='"'){ if(text[i]=='"'){ cur+='"'; i++; } else q=false; } else cur+=c; } else { if(c==='"'){ q=true; } else if(c===','){ row.push(cur); cur=''; } else if(c==='\n' || c==='\r'){ if(c==='\r' && text[i]==='\n') i++; row.push(cur); rows.push(row); row=[]; cur=''; } else cur+=c; } } row.push(cur); rows.push(row); return rows.filter(r=> r.length>1 || (r.length===1 && r[0]!=='')); }
+    function toCSV(rows){ return rows.map(r=> r.map(x=> /[",\n]/.test(x)? '"'+x.replace(/"/g,'""')+'"' : x).join(',')).join('\n'); }
+    document.getElementById('csv2json').addEventListener('click', ()=>{ const rows=parseCSV(csvIn.value.trim()); const [head,...body]=rows; const objs=body.map(r=> Object.fromEntries(head.map((h,i)=> [h, r[i]??'']))); csvOut.value=JSON.stringify(objs,null,2); });
+    document.getElementById('json2csv').addEventListener('click', ()=>{ try{ const arr=JSON.parse(csvIn.value); if(!Array.isArray(arr) || !arr.length) return csvOut.value='[]'; const head=[...new Set(arr.flatMap(o=> Object.keys(o)))]; const rows=[head, ...arr.map(o=> head.map(h=> String(o[h]??'')))]; csvOut.value=toCSV(rows); }catch(e){ csvOut.value='JSON error'; } });
+    const hashFile=document.getElementById('hashFile'), hashOut=document.getElementById('hashOut'), hashText=document.getElementById('hashText'), hashTextBtn=document.getElementById('hashTextBtn');
+    function toHex(buf){ return [...new Uint8Array(buf)].map(b=> b.toString(16).padStart(2,'0')).join(''); }
+    hashFile.addEventListener('change', async()=>{ const f=hashFile.files?.[0]; if(!f) return; const buf=await f.arrayBuffer(); const dig=await crypto.subtle.digest('SHA-256', buf); hashOut.value=toHex(dig); });
+    hashTextBtn.addEventListener('click', async()=>{ const buf=new TextEncoder().encode(hashText.value); const dig=await crypto.subtle.digest('SHA-256', buf); hashOut.value=toHex(dig); });
+
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Tab') document.body.style.setProperty('scroll-behavior','smooth'); });
+  </script>
+</body>
+</html>

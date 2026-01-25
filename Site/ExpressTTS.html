@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpressTTS — TTS Text</title>
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; }
+header { background:#2b2b2b; color:white; padding:15px 20px; text-align:center; }
+main { padding:20px; max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:15px; }
+textarea { width:100%; height:200px; resize:vertical; font-size:14px; padding:5px; }
+.row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+button { cursor:pointer; padding:5px 10px; font-size:14px; }
+.status { border-top:1px solid #ccc; padding:5px 10px; font-style:italic; background:#fff; border-radius:0 0 5px 5px; }
+fieldset { padding:10px; border-radius:5px; border:1px solid #ccc; }
+select { font-size:14px; padding:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ExpressTTS — TTS Text</h1>
+</header>
+
+<main>
+  <fieldset>
+    <legend>Text to Speak</legend>
+    <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Language & Voice Type</legend>
+    <div class="row">
+      <label for="langSelect">Language:</label>
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="uk">Ukrainian</option>
+        <option value="ru">Russian</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="es">Spanish</option>
+        <option value="it">Italian</option>
+        <option value="pl">Polish</option>
+        <option value="ja">Japanese</option>
+        <option value="zh-CN">Chinese</option>
+      </select>
+      <label for="voiceSelect">Voice:</label>
+      <select id="voiceSelect">
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+    </div>
+  </fieldset>
+
+  <div class="row">
+    <button id="playBtn">▶ Listen</button>
+    <button id="stopBtn">⏹ Stop</button>
+    <button id="saveBtn">💾 Save MP3 (Chunks)</button>
+    <button id="helpBtn">❓ Help</button>
+  </div>
+
+  <div class="status" id="status">Ready.</div>
+</main>
+
+<script>
+const textInput = document.getElementById("textInput");
+const langSelect = document.getElementById("langSelect");
+const voiceSelect = document.getElementById("voiceSelect");
+const status = document.getElementById("status");
+
+let currentAudios = [];
+let currentIndex = 0;
+
+function splitText(text, chunkSize=150) {
+    const chunks = [];
+    let start = 0;
+    while(start < text.length) {
+        chunks.push(text.slice(start, start + chunkSize));
+        start += chunkSize;
+    }
+    return chunks;
+}
+
+function getTTSUrl(chunk) {
+    const lang = langSelect.value;
+    const voice = voiceSelect.value;
+
+    let voiceParam = "";
+    if(lang === "ru") voiceParam = voice === "male" ? "&voice=Yuri" : "&voice=Zira";
+    if(lang === "en") voiceParam = voice === "male" ? "&voice=en-us-x-sfg#male" : "&voice=en-us-x-sfg#female";
+
+    return `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=${lang}&client=tw-ob${voiceParam}`;
+}
+
+function playLongTTS(text) {
+    stopTTS(); 
+    const chunks = splitText(text);
+    status.textContent = "Loading TTS...";
+    currentAudios = chunks.map(chunk => new Audio(getTTSUrl(chunk)));
+    currentIndex = 0;
+
+    function playNext() {
+        if(currentIndex >= currentAudios.length) { 
+            status.textContent = "Ready."; 
+            return; 
+        }
+        const audio = currentAudios[currentIndex++];
+        status.textContent = `Playing chunk ${currentIndex} / ${currentAudios.length}...`;
+        audio.play();
+        audio.onended = playNext;
+    }
+    playNext();
+}
+
+function stopTTS() {
+    currentAudios.forEach(a => a.pause());
+    currentAudios.forEach(a => a.currentTime = 0);
+    currentAudios = [];
+    currentIndex = 0;
+    status.textContent = "Stopped.";
+}
+
+async function downloadLongTTS(text) {
+    const chunks = splitText(text);
+    status.textContent = "Downloading MP3 chunks...";
+    for(let i=0;i<chunks.length;i++){
+        const url = getTTSUrl(chunks[i]);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `speech_chunk_${i+1}.mp3`;
+        a.click();
+        status.textContent = `Downloaded chunk ${i+1} / ${chunks.length}`;
+        await new Promise(r => setTimeout(r, 500));
+    }
+    status.textContent = "All chunks downloaded!";
+}
+
+document.getElementById("playBtn").addEventListener("click", () => {
+    const text = textInput.value.trim();
+    if(!text){ alert("Enter text."); return; }
+    playLongTTS(text);
+});
+
+document.getElementById("stopBtn").addEventListener("click", stopTTS);
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+    const text = textInput.value.trim();
+    if(!text){ alert("Enter text."); return; }
+    downloadLongTTS(text);
+});
+
+document.getElementById("helpBtn").addEventListener("click", () => {
+    alert(`TTS Online Help:
+• Enter text.
+• Select language and voice type.
+• ▶ Listen to hear large text.
+• ⏹ Stop to stop playback.
+• 💾 Save MP3 will download each chunk (~150 chars per MP3).`);
+});
+</script>
+
+</body>
+</html>

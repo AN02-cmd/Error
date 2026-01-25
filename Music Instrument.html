@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Music Instrument</title>
+  <meta name="description" content="Landing page for Music Instrument. Download the latest version and learn what it does.">
+  <meta property="og:title" content="Music Instrument" />
+  <meta property="og:description" content="Fast, simple, and secure. Download now." />
+  <meta property="og:type" content="website" />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" href="image/Music Instrument.jpg">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --primary: #2563eb;
+      --primary-press: #1d4ed8;
+      --ring: rgba(37, 99, 235, .3);
+      --radius: 16px;
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,.8);
+      backdrop-filter: saturate(180%) blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .2px; }
+    .brand img { width: 36px; height: 36px; object-fit: contain; }
+
+    nav { display: flex; align-items: center; justify-content: space-between; }
+    .nav-links { display: flex; gap: 16px; }
+    .nav-links a { color: var(--muted); text-decoration: none; }
+    .nav-links a:hover { color: var(--text); }
+
+    .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding: 48px 0; }
+    .eyebrow { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+    h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.15; margin: 8px 0 16px; }
+    .lead { font-size: 18px; color: var(--muted); margin-bottom: 28px; }
+
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--primary); color: #fff; border: none; border-radius: 999px;
+      padding: 14px 22px; font-weight: 700; text-decoration: none; box-shadow: var(--shadow);
+    }
+    .cta:hover { background: var(--primary-press); }
+    .cta:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+
+    .hero-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px; text-align: center;
+    }
+    .hero-card img { width: 160px; height: 160px; object-fit: contain; display: block; margin: 0 auto 12px; }
+    .hero-card .caption { color: var(--muted); font-size: 14px; }
+
+    .info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 48px 0; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+    .card h3 { margin-top: 0; font-size: 18px; }
+    .card p { margin: 8px 0 0; color: var(--muted); }
+
+    footer { border-top: 1px solid var(--border); margin-top: 48px; }
+    .footer-inner { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 24px 0; color: var(--muted); font-size: 14px; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .info { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero-card img { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <img src="image/Music Instrument.jpg" alt="Music Instrument logo" />
+          <span>Music Instrument</span>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#about">About</a>
+          <a href="#download">Download</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" id="download">
+      <div>
+        <div class="eyebrow">Now available</div>
+        <h1>Fast, simple, — meet <span style="white-space:nowrap">Music Instrument</span></h1>
+        <p class="lead">Music Instrument Feel like a musician right in your browser! Our site allows you to play various musical instruments - from piano and guitar to drums and synthesizers. Create melodies, experiment with sounds and share your music with friends</p>
+        <a class="cta" id="downloadBtn" href="/downloads/mini.zip" download>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
+        <a class="cta" id="downloadBtn" href="Site/Music instrument.html" download>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Open
+        </a>
+        <p class="caption" style="color:var(--muted); margin-top:8px">Latest: v1.0.0 • 64-bit • ~25&nbsp;MB</p>
+      </div>
+
+      <aside class="hero-card" aria-labelledby="logo-title">
+        <img src="image/Music Instrument.jpg" alt="Music Instrument logo preview" />
+        <h2 id="logo-title" style="margin:.2rem 0 .4rem; font-size: 18px;">Music Instrument Logo</h2>
+      </aside>
+    </section>
+
+    <section id="features" class="info">
+      <article class="card">
+        <h3>Easy to use</h3>
+        <p>Simple, clean interface designed for quick sketches and edits without distractions.</p>
+      </article>
+      <article class="card">
+        <h3>Essential tools</h3>
+        <p>Includes (🎹-Piano, 🎺-Pipe, 🎸-Guitar, 🎻-Violin, 🪘-Djembe, 🥁-Drums, ✨-Synth, 🎼-Organ, 🪈-Flute, 🎷-Saxon, 🎸-Also, 🎚️-Mixer, 🎛️-Effects, 🧪-Pro-settings, 📼-Record) to cover your basic needs.</p>
+      </article>
+      <article class="card">
+        <h3>Lightweight</h3>
+        <p>Runs smoothly even on older hardware with minimal system requirements.</p>
+      </article>
+    </section>
+
+    <section id="about" class="card">
+      <h2 style="margin: 0 0 8px">About Music Instrument</h2>
+      <p style="color:var(--muted); margin:0">Music Instrument is a simple and easy-to-use music creation tool designed for users who don't need the complex capabilities of professional studios. It's free, open source, and great for quick musical ideas, learning, or light creative experimentation with sound.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Music Instrument Project</span>
+      <div>
+        <a href="#" style="color:var(--muted); text-decoration:none; margin-right:12px">Privacy</a>
+        <a href="#" style="color:var(--muted); text-decoration:none">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('downloadBtn')?.addEventListener('click', () => {
+      console.log('Download started');
+    });
+  </script>
+</body>
+</html>

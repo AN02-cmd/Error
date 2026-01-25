@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ERROR • ERROR</title>
+  <meta name="description" content="ERROR • ERROR • ERROR">
+  <link id="favicon" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Ctext x='50' y='62' font-size='64' text-anchor='middle' fill='%23ff1744' font-family='monospace'%3E%E2%9C%97%3C/text%3E%3C/svg%3E"/>
+  <style>
+    :root { --bg-1:#0a0a0a; --bg-2:#121212; --accent:#ff1744; --accent2:#00e5ff; --text:#f8f8f8; --muted:#bbb; --bsod:#0b3b8c; }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;color:var(--text);background:radial-gradient(1200px 800px at 20% 0%,#101010,#000),linear-gradient(180deg,var(--bg-1),var(--bg-2));overflow-x:hidden;cursor:crosshair}
+    body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1}
+    body::before{background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0 1px,rgba(0,0,0,.03) 1px 2px);mix-blend-mode:overlay}
+    body::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 .05 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.35;animation:drift 30s linear infinite}
+    @keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-20%,-10%,0)}}
+    header{position:relative;padding:clamp(24px,6vw,64px) 4vw 12px;text-align:center;z-index:2}
+    .glitch{font-size:clamp(36px,11vw,140px);font-weight:900;letter-spacing:.02em;position:relative;display:inline-block;text-transform:uppercase;line-height:1;color:var(--text);filter:drop-shadow(0 0 12px rgba(255,23,68,.2));animation:flicker 2.2s infinite}
+    .glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;clip-path:polygon(0 2%,100% 0,100% 48%,0 50%)}
+    .glitch::before{color:var(--accent);transform:translate(-1.5px,-1px);mix-blend-mode:screen;animation:glitchy 2.5s infinite}
+    .glitch::after{color:var(--accent2);transform:translate(1.5px,1px);mix-blend-mode:screen;animation:glitchy 3s reverse infinite}
+    @keyframes glitchy{0%{clip-path:polygon(0 2%,100% 0,100% 48%,0 50%)}10%{clip-path:polygon(0 60%,100% 58%,100% 100%,0 100%)}20%{clip-path:polygon(0 0,100% 0,100% 12%,0 14%)}30%{clip-path:polygon(0 80%,100% 78%,100% 100%,0 100%)}40%{clip-path:polygon(0 40%,100% 38%,100% 60%,0 62%)}50%{clip-path:polygon(0 2%,100% 0,100% 48%,0 50%)}60%{clip-path:polygon(0 64%,100% 62%,100% 86%,0 88%)}70%{clip-path:polygon(0 20%,100% 18%,100% 36%,0 38%)}80%{clip-path:polygon(0 70%,100% 68%,100% 86%,0 88%)}90%{clip-path:polygon(0 10%,100% 8%,100% 28%,0 30%)}100%{clip-path:polygon(0 2%,100% 0,100% 48%,0 50%)}}
+    @keyframes flicker{0%,100%{text-shadow:0 0 0 rgba(255,255,255,0)}5%{text-shadow:0 0 6px rgba(255,255,255,.3)}10%{text-shadow:0 0 18px rgba(255,255,255,.2)}12%{text-shadow:0 0 12px rgba(255,255,255,.6)}20%{text-shadow:0 0 22px rgba(255,23,68,.4)}}
+    .marquee{--speed:22s;overflow:hidden;white-space:nowrap;border-block:1px dashed rgba(255,255,255,.08);background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent)}
+    .marquee .track{display:inline-block;padding:10px 0;animation:slide var(--speed) linear infinite}
+    .marquee b{color:var(--accent)} @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    main{position:relative;z-index:2}
+    .controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px 4vw 6px}
+    .btn{appearance:none;border:1px solid rgba(255,255,255,.2);background:#0d0d0d;color:var(--text);padding:8px 12px;border-radius:999px;cursor:pointer;font-size:13px;transition:transform .06s ease,box-shadow .2s ease,background .2s ease;box-shadow:0 6px 24px rgba(255,23,68,.15),inset 0 0 0 1px rgba(255,255,255,.06)}
+    .btn:hover{transform:translateY(-1px);background:#131313}
+    .btn:active{transform:translateY(0)}
+    .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;padding:24px 4vw 8px}
+    .cell{position:relative;aspect-ratio:2/1;display:grid;place-items:center;border:1px dashed rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,23,68,.06),rgba(0,0,0,.0));overflow:hidden;user-select:none}
+    .cell span{font-weight:800;letter-spacing:.08em;font-size:clamp(12px,3vw,24px);color:rgba(255,255,255,.95);text-shadow:1px 0 0 var(--accent),-1px 0 0 var(--accent2);animation:jolt 2.6s infinite}
+    @keyframes jolt{0%,100%{transform:translate(0)}10%{transform:translate(1px,-1px) rotate(-.3deg)}20%{transform:translate(-1px,1px) rotate(.3deg)}30%{transform:translate(.5px,-.5px)}40%{transform:translate(-.5px,.5px)}}
+    .gallery{padding:8px 4vw 40px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .card{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.5);background:#0a0a0a}
+    .card img{width:100%;height:100%;object-fit:cover;display:block}
+    .badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.6);color:var(--accent);border:1px solid rgba(255,255,255,.12);padding:4px 8px;border-radius:999px;font-size:12px;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+    .overlay{position:absolute;inset:auto 0 0 0;padding:10px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.7));font-size:12px;color:var(--muted)}
+    .popups{position:fixed;inset:0;pointer-events:none;z-index:6}
+    .popup{position:absolute;pointer-events:auto;min-width:200px;max-width:340px;background:#0d0d0d;color:var(--text);border:1px solid rgba(255,255,255,.22);box-shadow:0 12px 36px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06) inset;border-radius:10px;overflow:hidden;animation:pop .18s ease-out}
+    @keyframes pop{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+    .popup .title{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(180deg,#161616,#0f0f0f);border-bottom:1px solid rgba(255,255,255,.08)}
+    .popup .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(255,23,68,.6)}
+    .popup .body{padding:12px;font-size:14px}
+    .popup .actions{display:flex;justify-content:flex-end;gap:8px;padding:8px 12px 12px}
+    .popup.toast{min-width:260px;max-width:320px;right:16px;bottom:16px}
+    .popup.toast .title{background:linear-gradient(180deg,#1a1010,#110e0e)}
+    .small{font-size:12px;color:var(--muted)}
+    .feed{padding:8px 4vw 28px;display:grid;gap:8px}
+    .feed .row{display:flex;gap:10px;align-items:baseline;border:1px dashed rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(0,229,255,.06),rgba(0,0,0,0));padding:6px 10px;border-radius:10px}
+    .feed .tag{color:var(--accent2);font-weight:800}
+    .feed .code{color:var(--accent);font-weight:800}
+    .atlas{padding:8px 4vw 40px}
+    .atlas .tools{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+    .atlas input{flex:1;min-width:200px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:#0d0d0d;color:#fff}
+    .grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+    .tile{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px;background:linear-gradient(180deg,#0a0a0a,#0e0e0e)}
+    .tile .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .cat{font-size:12px;letter-spacing:.12em;color:var(--accent2);font-weight:800}
+    .code{font-weight:800;color:var(--accent)}
+    footer{text-align:center;color:var(--muted);padding:26px 4vw 60px}
+    @media (prefers-reduced-motion:reduce){.marquee .track,.glitch,.cell span,body::after{animation:none !important}}
+    .siren { animation: siren 1s steps(2) infinite; }
+    @keyframes siren { 50% { filter: hue-rotate(160deg) saturate(2); } }
+    .bsod{position:fixed;inset:0;background:var(--bsod);color:#fff;z-index:9999;display:none;align-items:center;justify-content:center;text-align:left}
+  .bsod-box{max-width:720px;padding:24px}
+  .bsod-face{font-size:96px;line-height:1;margin-bottom:10px}
+  </style>
+</head>
+<body>
+  <canvas id="rain" aria-hidden="true" style="position:fixed; inset:0; z-index:2; pointer-events:none;"></canvas>
+
+  <header>
+    <div aria-hidden="true" class="marquee" role="presentation">
+      <div class="track">
+        <span>ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • </span>
+        <span>ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • </span>
+        <span>ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • </span>
+        <span>ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • </span>
+        <span>ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • ERROR • <b>ERROR</b> • </span>
+      </div>
+    </div>
+    <h1 class="glitch" data-text="ERROR">ERROR</h1>
+    <p class="small" aria-live="polite">ALL TYPES: HTTP, JS, OS, DB, network, security, memory, GPU, payments, email, DNS, cloud, IoT — and all this as<b>ERROR</b>.</p>
+  </header>
+
+  <main>
+    <div class="controls">
+      <button class="btn" id="add">Add ERROR</button>
+      <button class="btn" id="spam">SPAM x200</button>
+      <button class="btn" id="auto">Auto: on</button>
+      <button class="btn" id="allcats">All categories x1</button>
+      <button class="btn" id="siren">Siren</button>
+      <button class="btn" id="sound">Sound: on</button>
+      <button class="btn" id="pack">Sound pack</button>
+      <button class="btn" id="bsodBtn">BSOD</button>
+      <button class="btn" id="clear">Remove popups</button>
+    </div>
+
+    <section class="wall" id="wall" aria-label="Wall ERROR"></section>
+
+    <section class="feed" id="feed" aria-label="Error log"></section>
+
+    <section class="gallery" aria-label="Галерея ERROR" id="gallery">
+      <article class="card"><span class="badge">GIF • ERROR</span><img src="https://cdn.dribbble.com/userupload/25463723/file/original-3393b2cec8d3c00838037664a3b69c74.gif" alt="Glitch screen"></article>
+      <article class="card"><span class="badge">GIF • ERROR</span><img src="https://gifdb.com/images/high/error-glitch-crack-scratch-yvlf2zt4t0tjpwsd.gif" alt="Popup error"></article>
+      <article class="card"><span class="badge">GIF • ERROR</span><img src="https://media.tenor.com/rRBWXoBqPikAAAAM/critical-error-error.gif" alt="TV static"></article>
+
+    </section>
+
+    <section class="atlas" id="atlas">
+      <div class="tools">
+        <input id="search" placeholder="Search by code/text/category…" />
+        <button class="btn" id="genAll">Generate one from each category</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <div id="bsod" class="bsod" role="dialog" aria-modal="true" aria-labelledby="bsodTitle" style="display:none">
+    <div class="bsod-box">
+      <div class="bsod-face">:(</div>
+      <h2 id="bsodTitle">Your PC ran into a problem and needs to restart.</h2>
+      <p>We're just collecting some error info, and then we'll restart for you.</p>
+      <p>Stop code: <b><span id="bsodCode">0x0000007B</span></b></p>
+      <button class="btn" id="closeBsod" style="margin-top:12px">Use off PC</button>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('closeBsod');
+      if(!btn) return;
+
+      function createPowerOverlay(){
+        const o = document.createElement('div');
+        o.id = 'powerOffScreen';
+        Object.assign(o.style, {
+          position: 'fixed',
+          inset: '0',
+          background: '#000',
+          color: '#888',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          zIndex: 100000,
+          fontFamily: 'ui-monospace, monospace',
+          textAlign: 'center',
+          padding: '24px'
+        });
+        o.innerHTML = '<div style="font-size:84px;line-height:1">⏻</div>'
+          + '<div style="font-size:20px">Powering off…</div>'
+          + '<div class="small">Tap/click or press any key to power on (reload)</div>';
+        return o;
+      }
+
+      function powerOff(){
+        try{
+          window.soundOn = false;
+          if(window.audioCtx && typeof window.audioCtx.suspend === 'function') window.audioCtx.suspend().catch(()=>{});
+        }catch(e){}
+
+        document.body.style.pointerEvents = 'none';
+
+        const overlay = createPowerOverlay();
+        document.documentElement.appendChild(overlay);
+
+        if(navigator.vibrate) navigator.vibrate([200,80,200]);
+
+        setTimeout(()=> {
+          const txt = overlay.querySelector('div:nth-child(2)');
+          if(txt) txt.textContent = 'Powered off';
+        }, 900);
+
+        const wake = ()=>{
+          try{
+            document.body.style.pointerEvents = 'auto';
+            if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            if(navigator.vibrate) navigator.vibrate(20);
+            try{ if(window.audioCtx && typeof window.audioCtx.resume === 'function') window.audioCtx.resume().catch(()=>{}); }catch(e){}
+          }finally{
+            window.removeEventListener('keydown', wake);
+            overlay.removeEventListener('click', wake);
+            location.reload();
+          }
+        };
+
+        overlay.addEventListener('click', wake);
+        window.addEventListener('keydown', wake, {once:true});
+      }
+
+      btn.addEventListener('click', (e)=>{
+        setTimeout(powerOff, 180);
+      });
+    })();
+  </script>
+
+  <div class="popups" id="popups" aria-live="polite"></div>
+
+  <script>
+    let audioCtx=null, soundOn=true, soundPack=0;
+    function ensureAudio(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
+    function beep(freq=880, dur=0.07, type='square', vol=0.06){ if(!soundOn||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; g.gain.setValueAtTime(vol, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur); }
+    function chirp(f1=300, f2=1800, dur=0.12){ if(!soundOn||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(f1, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(f2, audioCtx.currentTime + dur); g.gain.setValueAtTime(0.04, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + dur); }
+    function noise(dur=0.08){ if(!soundOn||!audioCtx) return; const b=audioCtx.createBuffer(1,audioCtx.sampleRate*dur,audioCtx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1)*(1-i/d.length);} const s=audioCtx.createBufferSource(); const g=audioCtx.createGain(); g.gain.value=0.08; s.buffer=b; s.connect(g); g.connect(audioCtx.destination); s.start(); }
+    function chord(freqs=[330,440,550], dur=0.14){ if(!soundOn||!audioCtx) return; const g=audioCtx.createGain(); g.gain.value=0.05; g.connect(audioCtx.destination); const t=audioCtx.currentTime; for(const f of freqs){ const o=audioCtx.createOscillator(); o.type='triangle'; o.frequency.value=f; o.connect(g); o.start(t); o.stop(t+dur); } g.gain.setValueAtTime(0.05,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); }
+    function alarm(dur=0.36){ if(!soundOn||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=660; g.gain.value=0.05; o.connect(g); g.connect(audioCtx.destination); o.start(); let t=0; const id=setInterval(()=>{ t+=.05; o.frequency.value = (o.frequency.value===660? 440:660); if(t>=dur){ clearInterval(id); o.stop(); } },60); }
+    function playSound(){ ensureAudio(); try{ switch(soundPack){ case 0: beep(660+Math.random()*660,0.06+Math.random()*0.06,'square'); break; case 1: chirp(220+Math.random()*400,1000+Math.random()*1400,0.12); break; case 2: noise(0.06+Math.random()*0.06); break; case 3: chord([330,440,550].map(f=>f*(.8+Math.random()*0.4)),0.14); break; case 4: alarm(0.36); break; } }catch(e){} }
+
+    const hex = () => (Math.random()*0xFFFFFF|0).toString(16).padStart(6,'0');
+    let errCount=0;
+    function setFavicon(count=0){ try{ const c=document.createElement('canvas'); c.width=64; c.height=64; const ctx=c.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,64,64); ctx.fillStyle='#ff1744'; ctx.font='bold 36px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('×',32,34); ctx.fillStyle='#00e5ff'; ctx.font='bold 14px monospace'; ctx.fillText(String(count>99?'99+':count),32,58); document.getElementById('favicon').href=c.toDataURL('image/png'); }catch(e){} }
+
+    const CATS = {
+      "HTTP":[
+        "400 Bad Request","401 Unauthorized","403 Forbidden","404 Not Found","405 Method Not Allowed","408 Request Timeout",
+        "409 Conflict","410 Gone","411 Length Required","413 Payload Too Large","414 URI Too Long","415 Unsupported Media Type",
+        "418 I'm a teapot","421 Misdirected Request","422 Unprocessable Entity","425 Too Early","426 Upgrade Required","429 Too Many Requests",
+        "431 Request Header Fields Too Large","451 Unavailable For Legal Reasons","500 Internal Server Error","501 Not Implemented",
+        "502 Bad Gateway","503 Service Unavailable","504 Gateway Timeout","507 Insufficient Storage","508 Loop Detected","511 Network Authentication Required"
+      ],
+      "JavaScript":[
+        "ReferenceError","TypeError","SyntaxError","RangeError","URIError","EvalError","AggregateError","DOMException","AbortError","QuotaExceededError"
+      ],
+      "OS/Kernel":[
+        "Segmentation fault (core dumped)","ACCESS_VIOLATION 0xC0000005","Kernel Panic: not syncing: Fatal exception",
+        "Page Fault in Nonpaged Area","General Protection Fault","Illegal Instruction"
+      ],
+      "Database":[
+        "SQLSTATE 23505 unique_violation","SQLSTATE 23503 foreign_key_violation","SQLSTATE 08003 connection_does_not_exist",
+        "ER_DUP_ENTRY","ER_LOCK_WAIT_TIMEOUT","deadlock detected","ORA-00001 unique constraint violated"
+      ],
+      "Filesystem":[
+        "ENOSPC: No space left on device","EACCES: Permission denied","EMFILE: Too many open files",
+        "ENOENT: No such file or directory","EROFS: Read-only file system"
+      ],
+      "Network":[
+        "ECONNRESET","ETIMEDOUT","EHOSTUNREACH","ENETUNREACH","EAI_AGAIN","TLS handshake timeout","SSL_ERROR_BAD_CERT_DOMAIN"
+      ],
+      "Security":[
+        "CSP violation","CSRF token invalid","X-Frame-Options DENY","HSTS mismatch","JWT expired","OAuth invalid_grant"
+      ],
+      "Auth":[
+        "Invalid credentials","MFA required","Account locked","Session expired","Password expired","Insufficient scope"
+      ],
+      "Cloud/Quotas":[
+        "RateLimitExceeded","ThrottlingException","QuotaExceeded","ResourceNotFound","InsufficientPermissions","BucketAlreadyExists"
+      ],
+      "Payments":[
+        "card_declined","insufficient_funds","invalid_expiry_year","processor_error","3DS authentication failed"
+      ],
+      "Email/SMTP":[
+        "SMTP 550 mailbox unavailable","554 Transaction failed","SPF fail","DKIM fail","DMARC reject"
+      ],
+      "DNS":[
+        "NXDOMAIN","SERVFAIL","REFUSED","FORMERR","NoAnswer","Timeout"
+      ],
+      "GPU/Graphics":[
+        "DXGI_ERROR_DEVICE_REMOVED","DEVICE_HUNG","Out of video memory","OpenGL INVALID_ENUM","Vulkan VK_ERROR_DEVICE_LOST"
+      ],
+      "Memory":[
+        "OutOfMemoryError: Java heap space","MemoryError (Python)","StackOverflowError","GC overhead limit exceeded"
+      ],
+      "Mobile":[
+        "ANR: Application Not Responding","NullPointerException (Android)","NetworkOnMainThreadException","NSInvalidArgumentException (iOS)"
+      ],
+      "IoT":[
+        "Device offline","MQTT disconnect","Firmware update failed","CRC error","Sensor timeout"
+      ],
+      "Programming/General": [
+        "Race condition detected",
+        "Deadlock detected",
+        "Use-after-free",
+        "Double free or corruption",
+        "Uninitialized variable",
+        "Buffer overflow",
+        "Off-by-one error",
+        "Divide by zero",
+        "Floating point NaN/INF propagation",
+        "Stack overflow",
+        "Heap corruption detected",
+        "Invalid state machine transition"
+      ],
+      "C": [
+        "segmentation fault (SIGSEGV)",
+        "bus error (SIGBUS)",
+        "abort (SIGABRT)",
+        "stack smashing detected",
+        "double free or corruption",
+        "invalid free() / delete",
+        "undefined reference to symbol",
+        "implicit declaration of function",
+        "incompatible pointer type",
+        "warning: control reaches end of non-void function"
+      ],
+      "C++": [
+        "std::bad_alloc",
+        "std::out_of_range",
+        "std::length_error",
+        "pure virtual method called",
+        "terminate called without an active exception",
+        "multiple definition of symbol",
+       "undefined reference to vtable",
+        "invalid conversion from 'const T*' to 'T*'",
+        "template instantiation failed",
+        "ODR violation (One Definition Rule)"
+      ],
+      "C#/.NET": [
+        "System.NullReferenceException",
+        "System.InvalidOperationException",
+        "System.ArgumentNullException",
+        "System.ArgumentOutOfRangeException",
+       "System.IO.FileNotFoundException",
+        "System.TypeInitializationException",
+        "System.Reflection.TargetInvocationException",
+        "System.UnauthorizedAccessException",
+        "System.NotImplementedException",
+        "System.OutOfMemoryException"
+      ],
+     ".NET/CLR": [
+        "FileLoadException: Could not load file or assembly",
+        "TypeLoadException",
+        "BadImageFormatException (x86/x64 mismatch)",
+        "MissingMethodException",
+        "DllNotFoundException",
+        "ConfigurationErrorsException",
+        "CS0103: The name 'X' does not exist in the current context",
+        "NU1101: Unable to find package"
+      ],
+      "Java": [
+        "NullPointerException",
+        "ClassNotFoundException",
+        "NoClassDefFoundError",
+        "OutOfMemoryError: Java heap space",
+        "StackOverflowError",
+        "IllegalStateException",
+        "ConcurrentModificationException",
+        "ClassCastException",
+        "NoSuchMethodError",
+        "LinkageError"
+      ],
+      "Python": [
+        "ModuleNotFoundError",
+        "ImportError: cannot import name",
+        "AttributeError: 'NoneType' object has no attribute",
+        "KeyError",
+        "TypeError: unsupported operand type(s)",
+        "ValueError",
+        "IndentationError",
+        "SyntaxError",
+        "RecursionError: maximum recursion depth exceeded",
+        "MemoryError"
+      ],
+      "JavaScript/Node": [
+        "TypeError: Cannot read properties of undefined (reading 'x')",
+        "ReferenceError: x is not defined",
+        "UnhandledPromiseRejectionWarning",
+        "RangeError: Maximum call stack size exceeded",
+        "SyntaxError: Unexpected token",
+        "ERR_MODULE_NOT_FOUND",
+        "ERR_REQUIRE_ESM / ERR_REQUIRE_ESM_MISMATCH",
+        "EADDRINUSE: address already in use",
+        "ECONNREFUSED",
+        "npm ERR! peer dep missing"
+      ],
+      "Unity": [
+        "NullReferenceException",
+        "MissingComponentException",
+        "UnassignedReferenceException",
+        "IndexOutOfRangeException",
+        "Build failed with errors",
+        "Shader error: invalid subscript",
+        "IL2CPP error: unresolved external symbol",
+        "PlayerLoop internal error",
+        "Addressables: Content update failed",
+        "Package Manager: Unable to add package"
+      ],
+      "Unreal Engine": [
+        "Fatal error: [File:...] [Line:...]",
+        "Assertion failed: ...",
+        "Access violation reading location 0x00000000",
+       "PackagingResults: Error: Cook failed",
+        "D3D device lost",
+        "Missing or incompatible modules detected",
+        "Blueprint compile error",
+        "UATHelper: Packaging failed",
+        "Ensure condition failed",
+        "Linker load failure"
+      ],
+      "Build/Toolchain": [
+        "linker command failed with exit code 1",
+        "ld: symbol(s) not found for architecture x86_64",
+        "Undefined symbols for architecture arm64",
+        "Makefile: recipe for target failed",
+        "CMake Error: Could not find package configuration file",
+        "Gradle build failed",
+        "MSB4019: The imported project was not found",
+        "codesign failed with exit code 1",
+        "Provisioning profile not found"
+      ],
+      "Git": [
+        "fatal: not a git repository",
+        "fatal: refusing to merge unrelated histories",
+        "error: Your local changes would be overwritten by merge",
+        "fatal: remote origin already exists",
+        "merge conflict in file",
+        "non-fast-forward updates were rejected",
+        "shallow update not allowed",
+        "object file is empty"
+      ],
+      "Docker/Kubernetes": [
+        "no space left on device (overlay2)",
+        "pull access denied for image",
+        "OCI runtime create failed",
+        "port is already allocated",
+        "CrashLoopBackOff",
+        "ImagePullBackOff",
+       "CreateContainerError",
+        "ErrImageNeverPull",
+        "Back-off restarting failed container",
+        "PodUnschedulable: insufficient resources"
+      ],
+      "Windows/BSOD": [
+        "STOP 0x0000007B INACCESSIBLE_BOOT_DEVICE",
+        "STOP 0x0000001E KMODE_EXCEPTION_NOT_HANDLED",
+        "IRQL_NOT_LESS_OR_EQUAL",
+       "PAGE_FAULT_IN_NONPAGED_AREA",
+        "SYSTEM_SERVICE_EXCEPTION",
+       "DPC_WATCHDOG_VIOLATION",
+        "HAL_INITIALIZATION_FAILED",
+        "DRIVER_POWER_STATE_FAILURE"
+      ],
+      "Linux": [
+        "Segmentation fault (core dumped)",
+        "permission denied (EACCES)",
+        "No such file or directory (ENOENT)",
+        "Too many open files (EMFILE)",
+        "Read-only file system (EROFS)",
+        "Kernel panic - not syncing",
+        "systemd: Failed to start service",
+        "Address already in use (EADDRINUSE)"
+      ],
+      "macOS/iOS": [
+        "dyld: Library not loaded",
+        "codesign allocation failed",
+        "NSInvalidArgumentException",
+        "Thread 1: signal SIGABRT",
+        "Provisioning profile '...' doesn't include the application identifier",
+        "Command PhaseScriptExecution failed"
+      ],
+      "Browser/WebAPI": [
+        "CORS policy: No 'Access-Control-Allow-Origin' header",
+        "Failed to fetch",
+        "SecurityError: The operation is insecure",
+        "QuotaExceededError: storage limit reached",
+        "NotAllowedError: Permission denied",
+        "AbortError: The user aborted a request",
+        "Navigation cancelled by new load",
+        "ServiceWorker registration failed"
+      ],
+      "TLS/SSL": [
+        "SSL routines: SSL3_GET_SERVER_CERTIFICATE: certificate verify failed",
+        "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+        "SELF_SIGNED_CERT_IN_CHAIN",
+        "ERR_SSL_PROTOCOL_ERROR",
+        "handshake_failure",
+        "no shared cipher",
+        "hostname mismatch"
+      ],
+      "AWS": [
+        "AccessDeniedException",
+        "ThrottlingException",
+        "RequestLimitExceeded",
+        "NoCredentialProviders: no valid providers in chain",
+        "ExpiredToken",
+        "BucketAlreadyOwnedByYou",
+        "ProvisionedThroughputExceededException (DynamoDB)",
+        "Lambda: Task timed out"
+      ],
+      "GCP": [
+        "PERMISSION_DENIED",
+        "RESOURCE_EXHAUSTED",
+        "QUOTA_EXCEEDED",
+        "Service account key not found",
+        "Image pull error (GCR)",
+        "Firebase: PERMISSION_DENIED: Missing or insufficient permissions"
+      ],
+      "Azure": [
+        "AuthorizationFailed",
+        "OperationNotAllowed",
+        "QuotaExceeded",
+        "AzureADSTS50011: reply URL mismatch",
+        "StorageErrorCode: AuthenticationFailed",
+        "App Service: Container failed to start"
+      ],
+      "PostgreSQL": [
+        "SQLSTATE 23505 unique_violation",
+        "SQLSTATE 23503 foreign_key_violation",
+        "deadlock detected",
+        "could not serialize access due to concurrent update",
+        "permission denied for relation",
+        "relation \"X\" does not exist",
+        "column \"X\" of relation \"Y\" does not exist",
+        "invalid input syntax for type"
+      ],
+      "MySQL": [
+        "ER_DUP_ENTRY",
+        "ER_LOCK_WAIT_TIMEOUT",
+        "ER_NO_SUCH_TABLE",
+        "ER_PARSE_ERROR",
+        "ER_ACCESS_DENIED_ERROR",
+        "Packets out of order",
+        "Too many connections",
+        "Lost connection to MySQL server during query"
+      ],
+      "MongoDB": [
+        "E11000 duplicate key error collection",
+        "ExceededTimeLimit",
+        "NotPrimaryNoSecondaryOk",
+        "WriteConflict",
+        "NetworkTimeout",
+        "CommandNotFound",
+        "ChangeStreamFatalError",
+        "Transaction numbers are only allowed on a replica set member or mongos"
+      ],
+      "Redis": [
+        "READONLY You can't write against a read only replica",
+        "MISCONF Redis is configured to save RDB snapshots",
+        "BUSYKEY Target key name already exists",
+        "OOM command not allowed when used memory > 'maxmemory'",
+        "LOADING Redis is loading the dataset in memory",
+        "NOAUTH Authentication required"
+      ],
+     "Elasticsearch": [
+        "index_not_found_exception",
+        "version_conflict_engine_exception",
+        "circuit_breaking_exception",
+        "mapper_parsing_exception",
+        "illegal_argument_exception",
+        "master_not_discovered_exception",
+        "security_exception"
+      ],
+      "Kafka": [
+        "LEADER_NOT_AVAILABLE",
+        "NOT_ENOUGH_REPLICAS",
+        "OFFSET_OUT_OF_RANGE",
+        "UNKNOWN_TOPIC_OR_PARTITION",
+        "CONNECTION_EXCEPTION",
+        "GROUP_AUTHORIZATION_FAILED",
+        "TIMED_OUT"
+      ]
+    };
+    
+    function quickFix(cat, err){
+      const e = err.toLowerCase();
+
+      if(e.includes('404')) return 'Check the URL/route and the existence of the resource; return 200/redirect or create a page.';
+      if(e.includes('401')) return 'Add/refresh token or session cookie; check Authorization/CSRF header.';
+      if(e.includes('403')) return 'Check permissions (ACL/roles), CORS, and resource access policy.';
+      if(e.includes('429')) return 'Add backoff/retries, cache; increase limits or optimize request frequency.';
+      if(e.includes('500')) return 'Look at the server logs/stack trace; handle exceptions and validate input.';
+      if(e.includes('413')) return 'Compress/split payload, increase max body size on backend/proxy.';
+
+      if(e.includes('referenceerror')) return 'Declare/import variable/function; check scope.';
+      if(e.includes('typeerror')) return 'Check for null/undefined before accessing; add optional string ?.';
+      if(e.includes('syntaxerror')) return 'Fix syntax: parentheses, commas, quotes, JSON without commas.';
+      if(e.includes('rangeerror')) return 'Check array bounds/recursion; limit depth or exit conditions.';
+
+      if(e.includes('enospc')) return 'Free up disk space/log-rotate; check tmp/overlay2.';
+      if(e.includes('eacces')) return 'Set the correct permissions/owner (chmod/chown), sudo/Policy.';
+      if(e.includes('emfile')) return 'Reduce the number of open files or increase ulimit -n.';
+      if(e.includes('enoent')) return 'Check path/file; create directories before accessing.';
+      if(e.includes('econnreset')||e.includes('etimedout')) return 'Add timeouts, retries, keep-alives; check network/firewall.';
+      if(e.includes('tls')||e.includes('ssl')) return 'Update the certificate/chain, reconcile protocols/ALPN, check the hostname.';
+
+      if(e.includes('csrf')) return 'Add/update CSRF token, enable SameSite for cookies.';
+      if(e.includes('csp')) return 'Update Content-Security-Policy, allow the required sources with hash/nonce.';
+      if(e.includes('jwt')&&e.includes('expired')) return 'Refresh the token via refresh or shorten the session TTL.';
+      if(e.includes('invalid credentials')) return 'Check login/password, OAuth providers, MFA time drift.';
+
+      if(e.includes('unique_violation')||e.includes('er_dup_entry')) return 'Check for a unique key; upsert/ignore duplicates or normalize the data.';
+      if(e.includes('foreign_key')) return 'Create/update related records or disable FK for import with subsequent validation.';
+      if(e.includes('deadlock')) return 'Transaction speeds, consistent update order, lowest isolation, retries.';
+      if(e.includes('lock wait timeout')) return 'Add indexes, break up transactions, increase the timeout.';
+      if(e.includes('connection_does_not_exist')) return 'Reopen the connection/pool, check timeouts and the network.';
+
+      if(e.includes('nxdomain')) return 'Check record/zone/TTL; propagate the instruction to all NS.';
+      if(e.includes('servfail')||e.includes('timeout')) return 'Check authoritative NS, glue, DNSSEC/DS records.';
+
+      if(e.includes('out of video memory')) return 'Reduce resolution/textures, resource streaming, update driver.';
+      if(e.includes('outofmemory')||e.includes('memoryerror')) return 'Profile memory, reduce objects, increase limits/heap.';
+      if(e.includes('stackoverflow')) return 'Replace deep recursion with iteration; check the basic conditions.';
+
+      if(e.includes('anr')) return 'Move heavy operations from the UI thread (coroutines/Workers).';
+      if(e.includes('networkonmainthread')) return 'Merezhu - in the background thread/async, and not in the main.';
+
+      if(e.includes('race condition')) return 'Synchronization: mutex/atomic/lock-free queues; minimize shared state.';
+      if(e.includes('use-after-free')||e.includes('double free')) return 'Streamline the lifecycle, smart pointers, sanitizers.';
+      if(e.includes('buffer overflow')) return 'Check boundaries, use safe APIs (strlcpy, std::string).';
+      if(e.includes('divide by zero')) return 'Validate divider, clamp, guard clauses.';
+
+      if(e.includes('undefined reference')||e.includes('multiple definition')) return 'Check linking/order of objects/libraries, ODR.';
+      if(e.includes('bad_alloc')) return 'Check for leaks/fragmentation; backup/delete copies, 64-bit build.';
+      if(e.includes('segmentation fault')) return 'Check pointers/indexes; address sanitizer/valgrind.';
+
+      if(e.includes('nullreferenceexception')) return 'Check for null, use ?. and initialize dependencies in Awake/ctor.';
+      if(e.includes('filenotfoundexception')) return 'Correct path/Content, copy to Output, check access rights.';
+      if(e.includes('badimageformat')) return 'x86/x64 compatibility, target frameworks and runtime versions.';
+
+      if(e.includes('nullpointerexception')) return 'Check for null, Optional/@NotNull, initialization in builder.';
+      if(e.includes('classnotfound')||e.includes('noclassdeffound')) return 'Add dependency to classpath/Gradle/Maven, check jar shadowing.';
+      if(e.includes('outofmemoryerror')) return 'Increase -Xmx/-Xms or allocation profile, streaming large objects.';
+
+      if(e.includes('modulenotfounderror')||e.includes('cannot import name')) return 'Install the package (pip/venv), check the name/cyclic imports.';
+      if(e.includes('attributeerror')&&e.includes('nonetype')) return 'Check that the function does not return None; add checks before accessing.';
+
+      if(e.includes('unity')||e.includes('unassignedreference')||e.includes('missingcomponent')) return 'Bind the component/script in the inspector, check Find/GetComponent.';
+      if(e.includes('il2cpp')||e.includes('build failed')) return 'Check build consoles, plugin/architecture compatibility, clean Library.';
+      if(e.includes('unreal')||e.includes('cook failed')||e.includes('uathelper')) return 'Clear DerivedDataCache/Intermediate, check plugins and SDK version, clean the project.';
+      if(e.includes('d3d device lost')) return 'Update driver/lower graphics settings, check throttle/thermals.';
+
+      if(e.includes('crashloopbackoff')) return 'Look at the container logs, fix the exit code, add readiness/healthcheck.';
+      if(e.includes('imagepullbackoff')||e.includes('pull access denied')) return 'Log in to registry/secret; check the tag and pull policy.';
+      if(e.includes('port is already allocated')) return 'Change the port/network rules or release the process on the port.';
+
+      if(e.includes('merge conflict')) return 'Resolve conflicts, commit, then merge/continue rebase.';
+      if(e.includes('not a git repository')) return 'Initialize git or change directory to the repository.';
+
+      return 'Check logs/stack, input and settings; reproduce min. example and commits by category.';
+    }
+
+
+    const wall=document.getElementById('wall'); const CELLS=608;
+    for(let i=0;i<CELLS;i++){ const c=document.createElement('div'); c.className='cell'; const s=document.createElement('span'); s.textContent=(i%13===0)?'FATAL ERROR':(i%7===0?'CRITICAL ERROR':(i%5===0?'WARNING':'ERROR')); c.appendChild(s); wall.appendChild(c); }
+
+    const popups=document.getElementById('popups'); const MAX_POPUPS=900; let totalPopups=0;
+    function makePopup(text='ERROR: Something went wrong!'){ if(totalPopups>=MAX_POPUPS) return; const p=document.createElement('div'); p.className='popup'; p.innerHTML=`<div class="title"><span class="dot"></span><strong>System ERROR</strong></div><div class="body">💥 ${text}<div class="small">Code: 0x${hex()}</div></div><div class="actions"><button class="btn" data-close>OK</button><button class="btn" data-again>I will ERROR</button></div>`; const vw=Math.max(document.documentElement.clientWidth||0,innerWidth||0); const vh=Math.max(document.documentElement.clientHeight||0,innerHeight||0); p.style.left=(Math.random()*(vw-340))+'px'; p.style.top=(Math.random()*(vh-200))+'px'; p.querySelector('[data-close]').addEventListener('click',()=>{p.remove(); totalPopups--;}); p.querySelector('[data-again]').addEventListener('click',()=>{ makePopup('ERROR: Try again later.');}); popups.appendChild(p); totalPopups++; errCount++; setFavicon(errCount); playSound(); if(navigator.vibrate) navigator.vibrate(15); }
+    function makeToast(text='ERROR: Unknown error'){ if(totalPopups>=MAX_POPUPS) return; const p=document.createElement('div'); p.className='popup toast'; p.innerHTML=`<div class="title"><span class="dot"></span><strong>Toast ERROR</strong></div><div class="body">⚠️ ${text}<div class="small">Code: 0x${hex()}</div></div>`; const existing=document.querySelectorAll('.popup.toast'); const offset=Math.min(existing.length,12)*74; p.style.position='fixed'; p.style.right='16px'; p.style.bottom=(16+offset)+'px'; popups.appendChild(p); totalPopups++; errCount++; setFavicon(errCount); playSound(); setTimeout(()=>{ p.remove(); totalPopups--; }, 4200+Math.random()*1500); }
+    function makePopupFix(cat, err){ if(totalPopups>=MAX_POPUPS) return; const tip = quickFix(cat, err); const p = document.createElement('div'); p.className = 'popup'; p.innerHTML = `<div class="title"><span class="dot"></span><strong>${cat} • Cause</strong></div><div class="body">💥 <b>${err}</b><div class="small" style="margin-top:8px">Code: 0x${hex()}</div><hr style="border-color:rgba(255,255,255,.08)">✅ <b>Fix:</b> ${tip}</div><div class="actions"><button class="btn" data-close>OK</button><button class="btn" data-again>Another</button></div>`;  const vw=Math.max(document.documentElement.clientWidth||0,innerWidth||0); const vh=Math.max(document.documentElement.clientHeight||0,innerHeight||0); p.style.left=(Math.random()*(vw-340))+'px'; p.style.top=(Math.random()*(vh-220))+'px';  p.querySelector('[data-close]').addEventListener('click',()=>{p.remove(); totalPopups--;}); p.querySelector('[data-again]').addEventListener('click',()=>{ makePopupFix(cat, err);}); popups.appendChild(p);  totalPopups++; errCount++; setFavicon(errCount); playSound(); if(navigator.vibrate) navigator.vibrate(15);  }
+
+    let autoOn=true, autoTimer; function autoTick(){ if(!autoOn) return; const burst=2+Math.floor(Math.random()*5); for(let i=0;i<burst;i++){ (Math.random()<0.5? makeToast('AUTO'): makePopup()); } autoTimer=setTimeout(autoTick, 1000+Math.random()*2000); } autoTick();
+
+    const feed=document.getElementById('feed'); const CAT_KEYS=Object.keys(CATS);
+    function pushRow(){ const k=CAT_KEYS[Math.floor(Math.random()*CAT_KEYS.length)]; const sample=CATS[k][Math.floor(Math.random()*CATS[k].length)]; const row=document.createElement('div'); row.className='row'; const code='0x'+hex(); const time=new Date().toLocaleTimeString(); row.innerHTML=`<span class="tag">[${time}]</span> <span><b>${k}</b>: <span class="code">${sample}</span> — Operation not completed. (${code})</span>`; feed.prepend(row); const max=260; while(feed.children.length>max) feed.lastChild.remove(); }
+    let feedTimer; function feedTick(){ pushRow(); feedTimer=setTimeout(feedTick, 500+Math.random()*700); } feedTick();
+
+    const grid=document.getElementById('grid'); const search=document.getElementById('search');
+    function renderAtlas(filter=''){ const f = filter.toLowerCase(); grid.innerHTML = ''; const frag = document.createDocumentFragment(); for(const [cat,items] of Object.entries(CATS)){ for(const it of items){ if(f && !(cat.toLowerCase().includes(f) || it.toLowerCase().includes(f))) continue; const t = document.createElement('div'); t.className = 'tile'; t.innerHTML = `<div class="h"><span class="cat">${cat}</span> <span class="code">${it.replace(/</g,'&lt;')}</span></div><button class="btn" data-cat="${cat}" data-code="${it}">Cause</button>`; frag.appendChild(t); } } grid.appendChild(frag); }
+    renderAtlas();
+    search.addEventListener('input', ()=>renderAtlas(search.value));
+    grid.addEventListener('click', (e)=>{ const b = e.target.closest('button[data-cat][data-code]'); if(!b) return; const cat = b.getAttribute('data-cat'); const err = b.getAttribute('data-code'); makePopupFix(cat, err); });
+
+    const genAll=document.getElementById('genAll'); genAll.addEventListener('click',()=>{ for(const [cat, items] of Object.entries(CATS)){ const it=items[Math.floor(Math.random()*items.length)]; makeToast(cat+': '+it); } });
+
+    const rain=document.getElementById('rain'); const rctx=rain.getContext('2d'); let drops=[]; function resize(){ rain.width=innerWidth*devicePixelRatio; rain.height=innerHeight*devicePixelRatio; rctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); } addEventListener('resize',resize); resize();
+    function makeDrop(){ return { x:Math.random()*innerWidth, y:-20-Math.random()*innerHeight, vy:70+Math.random()*180, text:(Math.random()<.12?'FATAL':'ERROR'), size:10+Math.random()*16, hue:Math.random()<.5?'#ff1744':'#00e5ff', alpha:.6+Math.random()*.4 }; }
+    for(let i=0;i<360;i++) drops.push(makeDrop());
+    function rainLoop(){ rctx.clearRect(0,0,innerWidth,innerHeight); for(const d of drops){ d.y+=d.vy/60; if(d.y>innerHeight+40){ d.y=-40; d.x=Math.random()*innerWidth; d.vy=70+Math.random()*180; d.text=(Math.random()<.15?'CRITICAL':'ERROR'); } rctx.globalAlpha=d.alpha; rctx.fillStyle=d.hue; rctx.font=`bold ${d.size}px monospace`; rctx.fillText(d.text,d.x,d.y);} rctx.globalAlpha=1; requestAnimationFrame(rainLoop); } requestAnimationFrame(rainLoop);
+
+    const addBtn=document.getElementById('add'), spamBtn=document.getElementById('spam'), autoBtn=document.getElementById('auto'), allcatsBtn=document.getElementById('allcats'), soundBtn=document.getElementById('sound'), packBtn=document.getElementById('pack'), clearBtn=document.getElementById('clear'), sirenBtn=document.getElementById('siren'), bsodBtn=document.getElementById('bsodBtn');
+    const unlock=()=>{ ensureAudio(); playSound(); window.removeEventListener('pointerdown',unlock); }; window.addEventListener('pointerdown',unlock,{once:true});
+
+    const bsod = document.getElementById('bsod');
+    const bsodCode = document.getElementById('bsodCode');
+    const closeBsod = document.getElementById('closeBsod');
+    const vibrate = (ms)=>{ if(navigator.vibrate) navigator.vibrate(ms); };
+
+    if(bsod && bsodCode && closeBsod && bsodBtn){
+      bsodBtn.addEventListener('click', ()=>{
+        bsodCode.textContent = '0x' + hex().toUpperCase();
+        bsod.style.display = 'flex';
+        beep(220, 0.2);
+        vibrate(60);
+      });
+      closeBsod.addEventListener('click', ()=>{
+        bsod.style.display = 'none';
+      });
+    }
+
+    addBtn.addEventListener('click',()=>{ for(let i=0;i<8;i++) makePopup('ERROR: Too ERROR!'); const g=document.getElementById('gallery'); const cards=g.querySelectorAll('.card'); if(cards.length){ const clone=cards[Math.floor(Math.random()*cards.length)].cloneNode(true); g.prepend(clone);} });
+    spamBtn.addEventListener('click',()=>{ for(let i=0;i<200;i++){ (Math.random()<0.5? makeToast('SPAM '+(i+1)): makePopup('SPAM '+(i+1))); } });
+    autoBtn.addEventListener('click',()=>{ autoOn=!autoOn; autoBtn.textContent='Auto: '+(autoOn?'ON':'OFF'); if(autoOn) autoTick(); else clearTimeout(autoTimer); });
+    allcatsBtn.addEventListener('click',()=>{ for(const [cat, items] of Object.entries(CATS)){ makePopup(cat+': '+items[Math.floor(Math.random()*items.length)]); } });
+    soundBtn.addEventListener('click',()=>{ soundOn=!soundOn; soundBtn.textContent='Sound: '+(soundOn?'ON':'OFF'); });
+    packBtn.addEventListener('click',()=>{ soundPack=(soundPack+1)%5; const names=['Beeps','Chirps','Noise','Chords','Alarm']; packBtn.textContent='Pac: '+names[soundPack]; playSound(); });
+    clearBtn.addEventListener('click',()=>{ popups.innerHTML=''; totalPopups=0; errCount=0; setFavicon(0); });
+    sirenBtn.addEventListener('click', () => { document.body.classList.toggle('siren'); sirenBtn.textContent = document.body.classList.contains('siren') ? 'Siren ON' : 'Siren OFF'; });
+    addEventListener('click',(e)=>{ if(e.target.closest('.btn,.popup,input,#grid button')) return; makePopup('ERROR: The click is too sharp!'); });
+
+    addEventListener('keydown',(e)=>{ const k=(e.key||'').toLowerCase(); if(k==='e'){ for(let i=0;i<12;i++) (Math.random()<0.5? makeToast('E-Key'): makePopup('E-Key')); } if(k==='p'){ packBtn.click(); } if(k==='a'){ allcatsBtn.click(); } if(k==='m'){ soundBtn.click(); }});
+  </script>
+</body>
+</html>

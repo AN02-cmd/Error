@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat For 2</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --bubble-me: #2563eb;
+      --bubble-friend: #334155;
+      --accent: #22c55e;
+      --offline: #475569;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #0b1024, var(--bg));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      display: grid; place-items: center;
+    }
+
+    .app {
+      width: min(1100px, 100%);
+      height: min(860px, 100dvh);
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 10px; padding: 14px;
+    }
+
+    .share { background: #0b1224; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 10px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .share small { color: var(--muted); }
+    .share .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .share input { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 10px; color: var(--text); }
+    .share button { border: none; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; color: #fff; background: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,.25); }
+
+    .header { position: relative; background: var(--panel); padding: 16px 72px; border-radius: 20px; box-shadow: var(--shadow); }
+    .title { text-align: center; font-weight: 700; letter-spacing: .3px; }
+    .avatars { position: absolute; inset: 0; pointer-events: none; }
+    .avatar-wrap { position: absolute; top: 50%; width: 64px; height: 64px; translate: 0 -50%; }
+    .avatar-wrap.left { left: 12px; }
+    .avatar-wrap.right { right: 12px; }
+    .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid #1f2937; box-shadow: 0 4px 14px rgba(0,0,0,.4); pointer-events: auto; cursor: pointer; }
+    .status { position: absolute; right: -2px; bottom: -2px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--panel); background: var(--offline); box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+    .status.online { background: var(--accent); }
+    .status-text { position: absolute; top: 50%; translate: 0 -50%; font-size: 12px; color: var(--muted); }
+    .status-text.left { left: 84px; }
+    .status-text.right { right: 84px; }
+
+    .profile { background: #0b1224; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+    .profile input { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 10px; color: var(--text); }
+    .profile button { border: none; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; color: #fff; background: #22c55e; box-shadow: 0 6px 18px rgba(34,197,94,.25); }
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .chat { background: var(--panel); border-radius: 20px; box-shadow: var(--shadow); display: grid; grid-template-rows: 1fr auto; overflow: hidden; }
+    .messages { overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+    .msg { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
+    .msg.friend { align-self: flex-start; }
+    .msg.me { align-self: flex-end; flex-direction: row-reverse; }
+    .bubble { padding: 10px 12px; border-radius: 14px; line-height: 1.35; position: relative; word-wrap: break-word; white-space: pre-wrap; }
+    .friend .bubble { background: var(--bubble-friend); border-top-left-radius: 4px; }
+    .me .bubble { background: var(--bubble-me); border-top-right-radius: 4px; }
+    .meta { margin-top: 6px; font-size: 11px; color: var(--muted); }
+    .msg .mini-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; opacity: .95; border: 2px solid #1f2937; }
+
+    .typing .bubble { opacity: .9; outline: 1px dashed rgba(255,255,255,.15); }
+    .typing .draft { font-style: italic; opacity: .9; }
+    .dots { display: inline-flex; gap: 4px; margin-right: 6px; }
+    .dots i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; animation: blink 1.3s infinite ease-in-out; }
+    .dots i:nth-child(2){ animation-delay: .2s }
+    .dots i:nth-child(3){ animation-delay: .4s }
+    @keyframes blink { 0%, 80%, 100% { opacity: .2 } 40% { opacity: 1 } }
+
+    .composer { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px; background: rgba(0,0,0,.2); }
+    .composer input[type="text"] { width: 100%; background: #0a0f1f; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 12px; color: var(--text); }
+    .composer button { border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; cursor: pointer; color: #fff; background: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,.25); }
+
+    @media (max-width: 860px) { .status-text { display: none; } }
+
+    @supports (height: 100svh) {
+      .app { height: min(860px, 100svh); }
+    }
+
+    @media (max-width: 540px) {
+
+      :root { --radius: 14px; }
+
+      body { place-items: stretch; }
+      .app {
+        width: 100%;
+        height: 100dvh;
+        padding: 10px;
+        gap: 8px;
+        grid-template-rows: auto auto 1fr auto;
+      }
+
+      .share {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--radius);
+      }
+      .share .row { grid-template-columns: 1fr; gap: 8px; }
+      .share input { padding: 12px; }
+      .share button { padding: 12px; }
+
+      .header { padding: 14px 56px; border-radius: var(--radius); }
+      .title { font-size: 16px; }
+      .avatar-wrap { width: 52px; height: 52px; }
+      .avatar { width: 52px; height: 52px; border-width: 2px; }
+      .status { width: 14px; height: 14px; border-width: 2px; }
+      .status-text { display: none; }
+
+      .profile {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--radius);
+      }
+      .profile input { padding: 12px; }
+      .profile button { padding: 12px; }
+
+      .chat { border-radius: var(--radius); }
+      .messages {
+        padding: 14px 12px;
+        gap: 10px;
+        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .msg { gap: 6px; max-width: 92%; }
+      .msg .mini-avatar { width: 24px; height: 24px; border-width: 2px; }
+      .bubble { padding: 9px 11px; border-radius: 12px; font-size: 15px; }
+      .meta { margin-top: 4px; font-size: 10px; }
+      .dots i { width: 5px; height: 5px; }
+
+      .composer {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        padding: 10px;
+        gap: 8px;
+        background:
+          linear-gradient(180deg, transparent, rgba(0,0,0,.25)),
+          rgba(0,0,0,.20);
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        backdrop-filter: saturate(1.1) blur(6px);
+      }
+      .composer input[type="text"] {
+        padding: 14px 12px;
+        border-radius: 12px;
+        font-size: 16px;
+      }
+      .composer button {
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 541px) and (max-width: 860px) {
+      .app { height: min(860px, 100dvh); }
+      .status-text { display: none; }
+      .messages { padding-bottom: 72px; }
+      .composer { position: sticky; bottom: 0; z-index: 5; }
+    }
+
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .app { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+      .header { padding-top: max(16px, env(safe-area-inset-top)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Реальний чат (Firebase)">
+    <section class="share">
+      <div>
+        <small>Зайдіть удвох за <b>одним і тим самим посиланням</b> (одна кімната = один #хеш у URL).</small>
+        <div class="row">
+          <input id="share-link" type="text" readonly>
+          <button id="copy-link" type="button">Скопіювати</button>
+        </div>
+      </div>
+      <div class="hint">Підказка: збережіть це як <code>index.html</code> у GitHub Pages.</div>
+    </section>
+
+    <header class="header">
+      <div class="title">Chat For 2</div>
+      <div class="avatars" aria-hidden="true">
+        <div class="avatar-wrap left">
+          <img id="avatar-friend" class="avatar" alt="Аватар друга" title="Аватар друга (змінює він у себе)" />
+          <span id="status-dot-friend" class="status" aria-hidden="true"></span>
+        </div>
+        <div class="avatar-wrap right">
+          <img id="avatar-me" class="avatar" alt="Мій аватар" title="Клікни, щоб змінити свій аватар (збережеться)" />
+          <span id="status-dot-me" class="status" aria-hidden="true"></span>
+        </div>
+        <div class="status-text left" id="status-text-friend">Friend — Not Online</div>
+        <div class="status-text right" id="status-text-me">I'm — Not Online</div>
+      </div>
+    </header>
+
+    <section class="profile">
+      <input id="display-name" type="text" placeholder="Ваш нікнейм" />
+      <button id="save-profile" type="button">Зберегти профіль</button>
+    </section>
+
+    <main class="chat">
+      <section id="messages" class="messages" aria-live="polite" aria-label="Повідомлення"></section>
+      <footer class="composer" aria-label="Ввід повідомлення">
+        <input id="input-text" type="text" placeholder="Напишіть повідомлення…" autocomplete="off" />
+        <button id="send" type="button">Надіслати</button>
+      </footer>
+    </main>
+  </div>
+
+  <input id="file-me" type="file" accept="image/*" hidden />
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, setDoc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_YoQzhcZeh8_VxFNuCruCYkW1kW6U1z4",
+    authDomain: "chat-k-8b1da.firebaseapp.com",
+    projectId: "chat-k-8b1da",
+    storageBucket: "chat-k-8b1da.firebasestorage.app",
+    messagingSenderId: "1024943282079",
+    appId: "1:1024943282079:web:defc637841012232344faa",
+    measurementId: "G-PGWDQ1WY8X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const shareLink = document.getElementById('share-link');
+    const copyLinkBtn = document.getElementById('copy-link');
+    const avatarMe = document.getElementById('avatar-me');
+    const avatarFriend = document.getElementById('avatar-friend');
+    const statusDot = { friend: document.getElementById('status-dot-friend'), me: document.getElementById('status-dot-me') };
+    const statusText = { friend: document.getElementById('status-text-friend'), me: document.getElementById('status-text-me') };
+    const fileMe = document.getElementById('file-me');
+    const nameInput = document.getElementById('display-name');
+    const saveProfileBtn = document.getElementById('save-profile');
+    const messagesEl = document.getElementById('messages');
+    const inputText = document.getElementById('input-text');
+    const sendBtn = document.getElementById('send');
+
+    function ensureRoomId(){
+      let id = location.hash.replace('#','').trim();
+      if(!id){ id = 'room-' + Math.random().toString(36).slice(2,8); history.replaceState(null, '', '#'+id); }
+      return id;
+    }
+    const roomId = ensureRoomId();
+    shareLink.value = location.href;
+    copyLinkBtn.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(shareLink.value); copyLinkBtn.textContent = 'Скопійовано!'; setTimeout(()=>copyLinkBtn.textContent='Скопіювати', 1500); } catch(e){ alert('Скопіюйте вручну'); }
+    });
+
+    const svgAvatar = (bg, text) => 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+        <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${bg}'/><stop offset='1' stop-color='#111827'/></linearGradient></defs>
+        <rect width='64' height='64' rx='12' fill='url(#g)'/>
+        <text x='50%' y='54%' font-family='Inter, system-ui, Arial' font-size='28' fill='white' text-anchor='middle'>${text}</text>
+      </svg>`);
+    avatarMe.src = localStorage.getItem('avatarURL') || svgAvatar('#10b981', 'Я');
+    avatarFriend.src = svgAvatar('#6366f1', 'Д');
+
+    let uid = null;
+    let myProfile = { name: localStorage.getItem('name') || 'Гість', avatarURL: localStorage.getItem('avatarURL') || '' };
+    nameInput.value = myProfile.name;
+
+    await signInAnonymously(auth);
+
+    onAuthStateChanged(auth, async (user) => {
+      if(!user) return;
+      uid = user.uid;
+      await setDoc(doc(db, 'rooms', roomId, 'participants', uid), {
+        name: myProfile.name,
+        avatarURL: myProfile.avatarURL || '',
+        lastSeen: serverTimestamp(),
+        typingText: '',
+        typingUpdatedAt: serverTimestamp()
+      }, { merge: true });
+
+      startHeartbeat();
+      listenParticipants();
+      listenMessages();
+    });
+
+    function startHeartbeat(){
+      setInterval(async () => {
+        if(!uid) return;
+        try { await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { lastSeen: serverTimestamp() }); } catch(_){}
+      }, 25_000);
+    }
+
+    saveProfileBtn.addEventListener('click', async () => {
+      myProfile.name = nameInput.value.trim() || 'Гість';
+      localStorage.setItem('name', myProfile.name);
+      if(uid){ await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { name: myProfile.name }); }
+    });
+
+    // Завантаження мого аватара в Firebase Storage (і збереження URL у Firestore)
+    avatarMe.addEventListener('click', () => fileMe.click());
+    fileMe.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if(!file || !uid) return;
+      try {
+        const path = `rooms/${roomId}/users/${uid}/avatar-${Date.now()}.png`;
+        const sref = ref(storage, path);
+        await uploadBytes(sref, file);
+        const url = await getDownloadURL(sref);
+        myProfile.avatarURL = url;
+        localStorage.setItem('avatarURL', url);
+        avatarMe.src = url;
+        await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { avatarURL: url });
+      } catch (err){ alert('Помилка завантаження аватара'); console.error(err); }
+    });
+
+    function isOnline(lastSeen){
+      if(!lastSeen?.toMillis) return false;
+      return (Date.now() - lastSeen.toMillis()) <= 60_000;
+    }
+
+    let friend = null;
+    function listenParticipants(){
+      const col = collection(db, 'rooms', roomId, 'participants');
+      onSnapshot(col, (snap) => {
+        let myDoc = null; const others = [];
+        snap.forEach(d => { const data = d.data(); (d.id === uid ? (myDoc = data) : others.push({ id: d.id, ...data })); });
+        others.sort((a,b) => (b.lastSeen?.seconds||0) - (a.lastSeen?.seconds||0));
+        friend = others[0] || null;
+
+        statusDot.me.classList.toggle('online', isOnline(myDoc?.lastSeen));
+        statusText.me.textContent = 'Я — ' + (isOnline(myDoc?.lastSeen) ? 'в мережі' : 'не в мережі');
+        statusDot.friend.classList.toggle('online', isOnline(friend?.lastSeen));
+        statusText.friend.textContent = 'Друг — ' + (isOnline(friend?.lastSeen) ? 'в мережі' : 'не в мережі');
+        if(friend?.avatarURL) avatarFriend.src = friend.avatarURL; else avatarFriend.src = svgAvatar('#6366f1', 'Д');
+
+        // Хмаринка набору тексту від друга (60с TTL)
+        const text = (friend?.typingText||'').trim();
+        const fresh = friend?.typingUpdatedAt?.toMillis && (Date.now() - friend.typingUpdatedAt.toMillis()) <= 60_000;
+        updateTypingBubble('friend', fresh ? text : '');
+      });
+    }
+
+    // Надіслати повідомлення
+    sendBtn.addEventListener('click', sendMessage);
+    inputText.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); sendMessage(); }});
+
+    async function sendMessage(){
+      const text = inputText.value.trim();
+      if(!text || !uid) return;
+      try {
+        await addDoc(collection(db, 'rooms', roomId, 'messages'), {
+          text, uid, name: myProfile.name, avatarURL: myProfile.avatarURL || '', createdAt: serverTimestamp()
+        });
+        inputText.value = '';
+        await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { typingText: '' });
+        updateTypingBubble('me', '');
+      } catch(err){ console.error(err); alert('Не вдалося надіслати'); }
+    }
+
+    let typingTimer = 0;
+    inputText.addEventListener('input', async (e) => {
+      const text = e.target.value;
+      updateTypingBubble('me', text);
+      if(!uid) return;
+      try {
+        await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { typingText: text, typingUpdatedAt: serverTimestamp() });
+      } catch(_){}
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(async () => {
+        try { await updateDoc(doc(db, 'rooms', roomId, 'participants', uid), { typingText: '' }); } catch(_){}
+        updateTypingBubble('me', '');
+      }, 60_000);
+    });
+
+    function listenMessages(){
+      const q = query(collection(db, 'rooms', roomId, 'messages'), orderBy('createdAt'));
+      onSnapshot(q, (snap) => {
+        messagesEl.innerHTML = '';
+        snap.forEach(d => renderMessage(d.id, d.data()));
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      });
+    }
+
+    function renderMessage(id, m){
+      const who = (m.uid === uid) ? 'me' : 'friend';
+      const wrap = document.createElement('div'); wrap.className = `msg ${who}`;
+      const avatar = document.createElement('img'); avatar.className = 'mini-avatar'; avatar.src = (who==='me' ? (myProfile.avatarURL||avatarMe.src) : (friend?.avatarURL || avatarFriend.src)); avatar.alt = 'аватар';
+      const bubble = document.createElement('div'); bubble.className = 'bubble';
+      const text = document.createElement('div'); text.textContent = m.text || '';
+      const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = (m.createdAt?.toDate?.() ? m.createdAt.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '…');
+      bubble.append(text, meta);
+      if(who==='friend') wrap.append(avatar, bubble); else wrap.append(bubble, avatar);
+      messagesEl.appendChild(wrap);
+    }
+
+    const typingNodes = { friend: null, me: null };
+    function updateTypingBubble(who, text){
+      text = (text||'').trim();
+      if(!text){ cancelTyping(who); return; }
+      const node = ensureTypingBubble(who);
+      node.querySelector('.txt').textContent = text;
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    function ensureTypingBubble(who){
+      if(typingNodes[who]) return typingNodes[who];
+      const m = document.createElement('div'); m.className = 'msg typing ' + (who === 'friend' ? 'friend' : 'me');
+      const avatar = document.createElement('img'); avatar.className = 'mini-avatar'; avatar.src = (who==='friend' ? (friend?.avatarURL||avatarFriend.src) : (myProfile.avatarURL||avatarMe.src));
+      const bubble = document.createElement('div'); bubble.className = 'bubble';
+      const content = document.createElement('div'); content.className = 'draft'; content.innerHTML = `<span class="dots"><i></i><i></i><i></i></span><span class="txt"></span>`;
+      const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = 'друкує…';
+      bubble.append(content, meta);
+      if(who==='friend') m.append(avatar, bubble); else m.append(bubble, avatar);
+      messagesEl.appendChild(m);
+      typingNodes[who] = m; return m;
+    }
+    function cancelTyping(who){ if(typingNodes[who]){ typingNodes[who].remove(); typingNodes[who] = null; } }
+
+    function setOnlineUI(who, online){ statusDot[who].classList.toggle('online', !!online); statusText[who].textContent = (who==='friend'?'Друг':'Я') + ' — ' + (online ? 'в мережі' : 'не в мережі'); }
+
+    const obs = new MutationObserver(() => {
+      for(const who of ['friend','me']){
+        const node = typingNodes[who]?.querySelector('.mini-avatar'); if(node) node.src = (who==='friend' ? (friend?.avatarURL||avatarFriend.src) : (myProfile.avatarURL||avatarMe.src));
+      }
+    });
+    obs.observe(avatarMe, { attributes: true, attributeFilter: ['src'] });
+    obs.observe(avatarFriend, { attributes: true, attributeFilter: ['src'] });
+
+    function system(text){ const msg = document.createElement('div'); msg.className = 'msg friend'; const bubble = document.createElement('div'); bubble.className = 'bubble'; const t = document.createElement('div'); t.style.opacity = .85; t.style.fontStyle = 'italic'; t.textContent = text; const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); bubble.append(t, meta); msg.append(bubble); messagesEl.append(msg); }
+    system('Готово! Поділися посиланням зверху з другом, щоб зайти в одну кімнату. Увімкніть нікнейм, завантажте аватар (він збережеться), друкуйте — хмаринка зникне через 1 хв або після відправки.');
+  </script>
+</body>
+</html>
